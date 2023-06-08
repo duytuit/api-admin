@@ -42,7 +42,7 @@ async function bootstrap() {
   setupSwagger(app);
 
   /* Khảo sát cổng khởi động */
-  await app.listen(3000);
+  await app.listen(8091);
 
   /* In swagger Địa chỉ */
   console.log('http://127.0.0.1:3000/swagger-ui/');
