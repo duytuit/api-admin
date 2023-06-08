@@ -19,7 +19,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "pm2": "cross-env NODE_ENV=production pm2 start --name node dist/main.js -p 8091",
+    "pm2": "cross-env NODE_ENV=production pm2 start --name node_cms dist/main.js -p 8091",
     "pm2_dev": "cross-env NODE_ENV=development pm2 start --name node_cms_admin dist/main.js"
   },
   "dependencies": {
