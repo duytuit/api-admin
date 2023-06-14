@@ -58,6 +58,6 @@ export class NoticeService {
 
   /* Xoá */
   async delete(noticeIdArr: number[] | string[]) {
-    return this.noticeRepository.delete(noticeIdArr);
+    return this.noticeRepository.softDelete(noticeIdArr);
   }
 }

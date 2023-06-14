@@ -118,7 +118,9 @@ export class DeptController {
   ) {
     const childs = await this.deptService.findChildsByParentId(deptId);
     if (childs && childs.length)
-      throw new ApiException('Vẫn còn các bộ phận khác thuộc bộ và không thể là Xoá');
+      throw new ApiException(
+        'Vẫn còn các bộ phận khác thuộc bộ và không thể là Xoá',
+      );
     await this.deptService.delete(deptId, userName);
   }
 

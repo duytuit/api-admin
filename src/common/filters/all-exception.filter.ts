@@ -3,7 +3,7 @@
  * @Date: 2021-12-08 19:31:36
  * @LastEditTime: 2022-09-18 11:07:34
  * @LastEditors: Please set LastEditors
- * @Description: 全局错误拦截器
+ * @Description: Trình đánh chặn lỗi toàn cầu
  * @FilePath: /meimei-admin/src/common/filters/all-exception.filter.ts
  * You can you up，no can no bb！！
  */
@@ -17,15 +17,17 @@ import {
 } from '@nestjs/common';
 import { AjaxResult } from '../class/ajax-result.class';
 import { ApiException } from '../exceptions/api.exception';
+import { LogDebug } from '../debugLog';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
-  catch(exception: unknown, host: ArgumentsHost) {
+  catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
     const { status, result } = this.errorResult(exception);
     response.header('Content-Type', 'application/json; charset=utf-8');
     response.status(status).json(result);
+    LogDebug._info(exception.stack);
   }
 
   /* 解析错误类型，获取Trạng thái码和返回值 */

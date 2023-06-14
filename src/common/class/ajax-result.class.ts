@@ -10,12 +10,17 @@
 export class AjaxResult {
   readonly code: number;
   readonly msg: string;
+  readonly data: any;
   [key: string]: any;
 
   constructor(code, msg, data) {
     this.code = code;
     this.msg = msg;
-    Object.assign(this, data);
+    if (Array.isArray(data)) {
+      this.data = data;
+    } else {
+      Object.assign(this, data);
+    }
   }
 
   static success(data?: any, msg = 'Hoạt động thành công') {

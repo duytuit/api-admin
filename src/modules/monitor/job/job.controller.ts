@@ -37,6 +37,7 @@ import {
 import { Job } from './entities/job.entity';
 import { JobLog } from './entities/job_log.entity';
 import { JobService } from './job.service';
+import { LogDebug } from 'src/common/debugLog';
 
 @ApiTags('Quản lý nhiệm vụ')
 @Controller('monitor')
@@ -55,6 +56,7 @@ export class JobController {
     @User(UserEnum.userName, UserInfoPipe) userName: string,
   ) {
     reqAddJob.createBy = reqAddJob.updateBy = userName;
+    LogDebug._info(userName);
     await this.jobService.addJob(reqAddJob);
   }
 

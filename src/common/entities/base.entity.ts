@@ -7,16 +7,18 @@
  * @FilePath: /meimei-admin/src/common/entities/base.entity.ts
  * You can you up，no can no bb！！
  */
-import { IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   UpdateDateColumn,
   VersionColumn,
 } from 'typeorm';
 import { ApiHideProperty } from '@nestjs/swagger';
 import { Excel } from 'src/modules/common/excel/excel.decorator';
 import { ExcelTypeEnum } from 'src/modules/common/excel/excel.enum';
+import { Type } from 'class-transformer';
 
 export class BaseEntity {
   /* Thời gian */
@@ -36,7 +38,12 @@ export class BaseEntity {
   updateTime: Date | string;
 
   /* người sáng lập */
-  @Column({ name: 'create_by', comment: 'người sáng lập', length: 30, default: '' })
+  @Column({
+    name: 'create_by',
+    comment: 'người sáng lập',
+    length: 30,
+    default: null,
+  })
   @ApiHideProperty()
   @Excel({
     name: 'người sáng lập',
@@ -46,12 +53,23 @@ export class BaseEntity {
   createBy: string;
 
   /* Cập nhật */
-  @Column({ name: 'update_by', comment: 'Cập nhật', length: 30, default: '' })
+  @Column({ name: 'update_by', comment: 'Cập nhật', length: 30, default: null })
   @ApiHideProperty()
   updateBy: string;
 
+  /* ID user last time update */
+
+  @Column({
+    name: 'last_update_user_id',
+    comment: 'ID người cập nhật cuối cùng',
+    default: null,
+  })
+  @IsNumber()
+  @IsOptional()
+  lastUpdateUserId: number | null;
+
   /* Nhận xét */
-  @Column({ name: 'remark', comment: 'Nhận xét', default: '' })
+  @Column({ name: 'remark', comment: 'Nhận xét', default: null })
   @IsOptional()
   @IsString()
   @Excel({
@@ -64,4 +82,7 @@ export class BaseEntity {
   @VersionColumn({ name: 'version', comment: 'số phiên bản', select: false })
   @ApiHideProperty()
   version?: number;
+
+  @DeleteDateColumn({ name: 'delete_at' })
+  deletedAt: Date;
 }

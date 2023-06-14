@@ -1,9 +1,23 @@
 import { Module } from '@nestjs/common';
 import { DevService } from './dev.service';
 import { DevController } from './dev.controller';
+import { ProductsModule } from '../products/products.module';
+import { CategoriesModule } from '../categories/categories.module';
+import { ProductDetailsModule } from '../product_details/product_details.module';
+import { UploadModule } from '../upload/upload.module';
+import { ProjectsModule } from '../projects/projects.module';
+import { GenresModule } from '../genres/genres.module';
 
 @Module({
+  imports: [
+    ProductsModule,
+    CategoriesModule,
+    ProductDetailsModule,
+    UploadModule,
+    ProjectsModule,
+    GenresModule,
+  ],
   controllers: [DevController],
-  providers: [DevService]
+  providers: [DevService],
 })
 export class DevModule {}

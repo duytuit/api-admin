@@ -35,6 +35,8 @@ export class ReponseTransformInterceptor implements NestInterceptor {
         if (keep) return data;
         const response = context.switchToHttp().getResponse();
         response.header('Content-Type', 'application/json; charset=utf-8');
+        // console.log('handle trả về', data);
+
         return AjaxResult.success(data);
       }),
     );

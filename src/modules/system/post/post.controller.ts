@@ -54,7 +54,8 @@ export class PostController {
     @User(UserEnum.userName, UserInfoPipe) userName: string,
   ) {
     const post = await this.postService.findByPostCode(reqAddPostDto.postCode);
-    if (post) throw new ApiException('Mã bài đăng đã tồn tại, vui lòng thay thế');
+    if (post)
+      throw new ApiException('Mã bài đăng đã tồn tại, vui lòng thay thế');
     reqAddPostDto.createBy = reqAddPostDto.updateBy = userName;
     await this.postService.addOrUpdate(reqAddPostDto);
   }

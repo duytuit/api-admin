@@ -99,7 +99,7 @@ export class UserController {
     };
   }
 
-  /* Thay đổi thông tin người dùng cá nhân */
+  /* Thay đổi thông tin ngư ời dùng cá nhân */
   @RepeatSubmit()
   @Put('profile')
   @Log({
@@ -180,7 +180,10 @@ export class UserController {
     const user = await this.userService.findOneByUserNameState(
       reqAddUserDto.userName,
     );
-    if (user) throw new ApiException('Tên người dùng này đã tồn tại, vui lòng thay thế nó');
+    if (user)
+      throw new ApiException(
+        'Tên người dùng này đã tồn tại, vui lòng thay thế nó',
+      );
     reqAddUserDto.createBy = reqAddUserDto.updateBy = userName;
     await this.userService.addUser(reqAddUserDto);
   }
