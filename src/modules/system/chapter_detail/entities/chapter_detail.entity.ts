@@ -1,9 +1,9 @@
 import { Type } from 'class-transformer';
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 import { BaseEntity } from 'src/common/entities/base.entity';
-import { Column, Double, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
-export class Product extends BaseEntity {
+export class ChapterDetail extends BaseEntity {
   @PrimaryGeneratedColumn({
     name: 'id',
     comment: 'id',
@@ -15,7 +15,7 @@ export class Product extends BaseEntity {
   /* Name */
   @Column({
     name: 'name',
-    comment: 'Tên sản phẩm',
+    comment: 'Tên chương',
     length: 500,
   })
   @IsString()
@@ -25,42 +25,21 @@ export class Product extends BaseEntity {
   @Column({
     name: 'link_external',
     comment: 'link external',
+    length: 500,
     default: null,
   })
   @IsString()
   @Type()
   linkExternal: string;
 
-  /* Thumnail */
+  /* Image */
   @Column({
-    name: 'image_thumnail',
-    comment: 'Ảnh',
+    name: 'images',
+    comment: 'ảnh',
     default: null,
   })
   @IsString()
-  @Type()
-  imageThumnail: string;
-
-  /* Rated */
-  @Column({
-    name: 'rated',
-    comment: 'Đánh giá',
-    default: null,
-    type: 'double',
-  })
-  @IsNumber()
-  @Type()
-  rated: string | null;
-
-  /* Category Id */
-  @Column({
-    name: 'category_id',
-    comment: 'Id danh mục',
-    default: null,
-  })
-  @IsNumber()
-  @Type()
-  categoryId: number | null;
+  images: string;
 
   /* Project Id */
   @Column({
@@ -69,25 +48,26 @@ export class Product extends BaseEntity {
     default: null,
   })
   @IsNumber()
-  @Type()
+  @IsOptional()
   projectId: number | null;
+
+  /* Product Detail Id */
+  @Column({
+    name: 'product_detail_id',
+    comment: 'Id chi tiết sản phẩm',
+    default: null,
+  })
+  @IsNumber()
+  @IsOptional()
+  productDetailId: number | null;
 
   @Column({
     name: 'status',
-    comment: 'Trạng thái',
-    default: 0,
-  })
-  @IsNumber()
-  @Type()
-  status: number;
-
-  @Column({
-    name: 'public',
     comment: 'Thông báo trang thái (0 bình thường 1 đóng) ',
     type: 'tinyint',
     default: 0,
   })
   @Type()
   @IsNumber()
-  public: number;
+  status: number;
 }

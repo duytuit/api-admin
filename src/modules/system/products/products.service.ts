@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/req-product.dto';
 import { Product } from './entities/product.entity';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Like, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
@@ -13,9 +13,16 @@ export class ProductsService {
   async addOrUpdate(CreateProductDto: CreateProductDto) {
     return await this.productRepository.save(CreateProductDto);
   }
-
-  findAll() {
-    return `This action returns all products`;
+  async findByLink(name: string) {
+    const where: FindOptionsWhere<Product> = {};
+    if (name) {
+      where.linkExternal = Like(`%${name}%`);
+    }
+    return await this.productRepository.findBy(where);
+  }
+  async findAll() {
+    const where: FindOptionsWhere<Product> = {};
+    return await this.productRepository.findBy(where);
   }
 
   findOne(id: number) {

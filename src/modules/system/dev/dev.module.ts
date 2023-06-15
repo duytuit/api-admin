@@ -7,6 +7,7 @@ import { ProductDetailsModule } from '../product_details/product_details.module'
 import { UploadModule } from '../upload/upload.module';
 import { ProjectsModule } from '../projects/projects.module';
 import { GenresModule } from '../genres/genres.module';
+import { ChapterDetailModule } from '../chapter_detail/chapter_detail.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { GenresModule } from '../genres/genres.module';
     UploadModule,
     ProjectsModule,
     GenresModule,
+    ChapterDetailModule,
   ],
   controllers: [DevController],
   providers: [DevService],

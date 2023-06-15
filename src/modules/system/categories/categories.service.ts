@@ -1,3 +1,4 @@
+import { async } from 'rxjs';
 import { Injectable } from '@nestjs/common';
 import { CreateCategoryDto, ReqCategoryList } from './dto/req-category.dto';
 import { UpdateCategoryDto } from './dto/res-category.dto';
@@ -48,10 +49,20 @@ export class CategoriesService {
     }
     return rs_list ? JSON.parse(rs_list) : null;
   }
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
+  async findByName(name: string) {
+    const where: FindOptionsWhere<Category> = {};
+    if (name) {
+      where.name = Like(`%${name}%`);
+    }
+    return await this.categoryRepository.findBy(where);
   }
-
+  async findByLink(name: string) {
+    const where: FindOptionsWhere<Category> = {};
+    if (name) {
+      where.linkExternal = Like(`%${name}%`);
+    }
+    return await this.categoryRepository.findOneBy(where);
+  }
   update(id: number, updateCategoryDto: UpdateCategoryDto) {
     return `This action updates a #${id} category`;
   }

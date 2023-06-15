@@ -21,6 +21,17 @@ export class Genre extends BaseEntity {
   @IsString()
   name: string;
 
+  /* Link */
+  @Column({
+    name: 'link_external',
+    comment: 'link external',
+    length: 500,
+    default: null,
+  })
+  @IsString()
+  @Type()
+  linkExternal: string;
+
   /* Project Id */
   @Column({
     name: 'project_id',

@@ -17,8 +17,10 @@ export class ProductDetail extends BaseEntity {
     name: 'name',
     comment: 'Tên sản phẩm',
     length: 500,
+    default: null,
   })
   @IsString()
+  @Type()
   name: string;
 
   /* Thumnail */
@@ -26,6 +28,7 @@ export class ProductDetail extends BaseEntity {
     name: 'image_thumnail',
     comment: 'Ảnh',
     length: 500,
+    default: null,
   })
   @IsString()
   imageThumnail: string;
@@ -35,6 +38,7 @@ export class ProductDetail extends BaseEntity {
     name: 'release',
     comment: 'Xuất bản',
     length: 500,
+    default: null,
   })
   @IsString()
   release: string;
@@ -44,6 +48,7 @@ export class ProductDetail extends BaseEntity {
     name: 'short_description',
     comment: 'Mô tả ngắn',
     type: 'longtext',
+    default: null,
   })
   @IsString()
   shortDescription: string;
@@ -53,6 +58,7 @@ export class ProductDetail extends BaseEntity {
     name: 'description',
     comment: 'Mô tả',
     type: 'longtext',
+    default: null,
   })
   @IsString()
   description: string;
@@ -62,6 +68,7 @@ export class ProductDetail extends BaseEntity {
     name: 'chapters',
     comment: 'Chương',
     type: 'longtext',
+    default: null,
   })
   @IsString()
   chapters: string;

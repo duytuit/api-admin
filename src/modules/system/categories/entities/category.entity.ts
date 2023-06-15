@@ -21,6 +21,17 @@ export class Category extends BaseEntity {
   @IsString()
   name: string;
 
+  /* Link */
+  @Column({
+    name: 'link_external',
+    comment: 'link external',
+    length: 500,
+    default: null,
+  })
+  @IsString()
+  @Type()
+  linkExternal: string;
+
   /* Type */
   @Column({
     name: 'type',
@@ -35,7 +46,7 @@ export class Category extends BaseEntity {
   @Column({
     name: 'image',
     comment: 'ảnh',
-    length: 500,
+    default: null,
   })
   @IsString()
   image: string;

@@ -31,7 +31,6 @@ export class BaseEntity {
     sort: 100,
   })
   createTime: Date | string;
-
   /* Cập nhật thời gian */
   @UpdateDateColumn({ name: 'update_time', comment: 'Cập nhật thời gian' })
   @ApiHideProperty()

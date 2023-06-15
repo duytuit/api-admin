@@ -20,7 +20,7 @@ export default defineConfig({
     port: process.env.MYSQL_PORT || 3306, //Cổng cơ sở dữ liệu
     username: process.env.MYSQL_USERNAME || 'root', //Tài khoản cơ sở dữ liệu
     password: process.env.MYSQL_PASSWORD || 'Duytuit89!', //Mật khẩu cơ sở dữ liệu
-    database: process.env.MYSQL_DATABASE || 'cms_admin', //Tên cơ sở dữ liệu
+    database: process.env.MYSQL_DATABASE || 'cms_admin_v2', //Tên cơ sở dữ liệu
     autoLoadModels: true, //Mô hình được tự động tải mà không cần thực hành lặp lại tại cấu hình.
     synchronize: true, //Nếu mô hình tự động tải cho true sẽ được đồng bộ hóa vào cơ sở dữ liệu và môi trường sản xuất phải được đóng, nếu không dữ liệu bị mất do xóa trường.
     logging: true, //Có bắt đầu bản ghi nhật ký không

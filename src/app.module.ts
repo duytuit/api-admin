@@ -28,6 +28,7 @@ import { BlogsModule } from './modules/system/blogs/blogs.module';
 import { VisaModule } from './modules/vietnamoz/visa/visa.module';
 import { PaymentsModule } from './modules/system/payments/payments.module';
 import { GenresModule } from './modules/system/genres/genres.module';
+import { ChapterDetailModule } from './modules/system/chapter_detail/chapter_detail.module';
 
 /* Sẽ provider Tên lớp，Thuận tiện để gọi hẹn giờ gọi*/
 const providers = [JobService];
@@ -80,6 +81,7 @@ const aliasProviders = createAliasProviders();
     VisaModule,
     PaymentsModule,
     GenresModule,
+    ChapterDetailModule,
   ],
   providers: [...aliasProviders],
 })

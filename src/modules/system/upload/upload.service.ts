@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ResUploadDto } from './dto/res-upload.dto';
 import { Upload } from './entities/upload.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Like, Repository } from 'typeorm';
 import { ReqUploadDto } from './dto/req-upload.dto';
 import axios from 'axios';
 import * as FormData from 'form-data';
@@ -15,7 +15,7 @@ export class UploadService {
     @InjectRepository(Upload)
     private readonly uploadRepository: Repository<Upload>,
   ) {}
-  async add(files: Array<Express.Multer.File>, path_file?: string) {
+  async add(files?: Array<Express.Multer.File>, path_file?: string) {
     const upload_arr = [];
     if (files.length > 0) {
       const fdata: any = new FormData();
@@ -72,7 +72,13 @@ export class UploadService {
   findAll() {
     return `This action returns all upload`;
   }
-
+  async findByName(name: string) {
+    const where: FindOptionsWhere<Upload> = {};
+    if (name) {
+      where.fileName = Like(`%${name}%`);
+    }
+    return await this.uploadRepository.findBy(where);
+  }
   /* Truy vấn thông qua ID */
   async findOne(uploadId: number) {
     return this.uploadRepository.findOneBy({ uploadId });
