@@ -84,7 +84,7 @@ export class DevController {
   }
   private async cateManga() {
     const browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       args: ['--no-sandbox'],
     });
     const page = await browser.newPage();
@@ -134,7 +134,7 @@ export class DevController {
     );
     console.log(new_stkissmanga);
     const browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       args: ['--no-sandbox'],
     });
     const page = await browser.newPage();
@@ -214,7 +214,7 @@ export class DevController {
     if (list.length > 0) {
       const dataObj = {};
       const browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
         args: ['--no-sandbox'],
       });
       const page = await browser.newPage();
@@ -333,7 +333,7 @@ export class DevController {
 
     if (list.length > 0) {
       const browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
         args: ['--no-sandbox'],
       });
       const page = await browser.newPage();
