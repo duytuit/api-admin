@@ -225,99 +225,105 @@ export class DevController {
           waitUntil: 'domcontentloaded',
           timeout: 30000,
         }); // check networkidle0 parameter and others here: https://pptr.dev/#?product=Puppeteer&version=v2.1.1&show=api-pagegotourl-options
-        dataObj['title'] = await page.$eval(
-          'div.post-title',
-          (item) => item.innerText,
-        );
-        dataObj['thumbnail_2'] = await page.$eval(
-          'div.summary_image img',
-          (item) => item.src,
-        );
-        dataObj['content'] = await page.$eval(
-          'div.summary__content',
-          (item) => item.innerText,
-        );
-        dataObj['release'] = await page.$eval(
-          'div.post-status div.summary-content a',
-          (item) => item.innerText,
-        );
-        dataObj['alternative'] = await page.$eval(
-          'div:nth-of-type(5) div.summary-content',
-          (item) => item.innerText,
-        );
-        const Genres = await page.$$eval('div.genres-content a', (links) => {
-          // Make sure the book to be scraped is in stock
-          // Extract the links from the data
-          return links.map((el) => ({
-            text: el.innerText,
-            url: el.href,
-          }));
-        });
-        const chapter = await page.$$eval('div.wp-manga-chapter', (links) => {
-          // Make sure the book to be scraped is in stock
-          // Extract the links from the data
-          return links.map((el) => ({
-            text: el.querySelector('a').innerText,
-            url: el.querySelector('a').href,
-            post_on: el.querySelector('div.chapter-release-date i')?.innerHTML,
-          }));
-        });
-        dataObj['genres'] = Genres;
-        dataObj['chapter'] = chapter;
-        console.log(dataObj);
-        const new_Genres = [];
-        Genres.forEach(async (item) => {
-          console.log(item.url);
-          const rs_genres = await this.genresService.findByLink(item.url);
-          console.log('rs_genres', rs_genres);
-          if (!rs_genres) {
-            const genre = new Genre();
-            genre.linkExternal = item.url;
-            genre.name = item.text;
-            genre.projectId = 1;
-            const gen_save = await this.genresService.addOrUpdate(genre);
-            new_Genres.push(gen_save.id);
-          }
-        });
-        if (dataObj) {
-          const rs_pro_detail = await this.productDetailsService.findByName(
-            dataObj['title'],
+        try {
+          dataObj['title'] = await page.$eval(
+            'div.post-title',
+            (item) => item.innerText,
           );
-          let rs_url = [];
-          const re_uoload = await this.uploadService.findByName(
-            dataObj['thumbnail_2'],
+          dataObj['thumbnail_2'] = await page.$eval(
+            'div.summary_image img',
+            (item) => item.src,
           );
-          if (!re_uoload) {
-            rs_url = await this.uploadService.add([], dataObj['thumbnail_2']);
-          }
-          if (rs_pro_detail && rs_pro_detail?.name) {
-            console.log('có sửa ở đây');
-            console.log(rs_pro_detail);
-            rs_pro_detail.chapters = JSON.stringify(chapter);
-            const dsf = await this.productDetailsService.addOrUpdate(
-              rs_pro_detail,
+          dataObj['content'] = await page.$eval(
+            'div.summary__content',
+            (item) => item.innerText,
+          );
+          dataObj['release'] = await page.$eval(
+            'div.post-status div.summary-content a',
+            (item) => item.innerText,
+          );
+          dataObj['alternative'] = await page.$eval(
+            'div:nth-of-type(5) div.summary-content',
+            (item) => item.innerText,
+          );
+          const Genres = await page.$$eval('div.genres-content a', (links) => {
+            // Make sure the book to be scraped is in stock
+            // Extract the links from the data
+            return links.map((el) => ({
+              text: el.innerText,
+              url: el.href,
+            }));
+          });
+          const chapter = await page.$$eval('div.wp-manga-chapter', (links) => {
+            // Make sure the book to be scraped is in stock
+            // Extract the links from the data
+            return links.map((el) => ({
+              text: el.querySelector('a').innerText,
+              url: el.querySelector('a').href,
+              post_on: el.querySelector('div.chapter-release-date i')
+                ?.innerHTML,
+            }));
+          });
+          dataObj['genres'] = Genres;
+          dataObj['chapter'] = chapter;
+          console.log(dataObj);
+          const new_Genres = [];
+          Genres.forEach(async (item) => {
+            console.log(item.url);
+            const rs_genres = await this.genresService.findByLink(item.url);
+            console.log('rs_genres', rs_genres);
+            if (!rs_genres) {
+              const genre = new Genre();
+              genre.linkExternal = item.url;
+              genre.name = item.text;
+              genre.projectId = 1;
+              const gen_save = await this.genresService.addOrUpdate(genre);
+              new_Genres.push(gen_save.id);
+            }
+          });
+          if (dataObj) {
+            const rs_pro_detail = await this.productDetailsService.findByName(
+              dataObj['title'],
             );
-          } else {
-            console.log('có thêm ở đây');
-            console.log(dataObj['title']);
-            const product_detail = new ProductDetail();
-            product_detail.name = dataObj['title'];
-            product_detail.shortDescription = dataObj['alternative'];
-            product_detail.description = dataObj['content'];
-            product_detail.release = dataObj['release'];
-            product_detail.chapters = JSON.stringify(chapter);
-            product_detail.productId = index.id;
-            product_detail.projectId = 1;
-            product_detail.imageThumnail = rs_url
-              ? rs_url[0].externalLink
-              : null;
-            new_Genres.length > 0
-              ? (product_detail.genresId = JSON.stringify(new_Genres))
-              : null;
-            const dsf = await this.productDetailsService.addOrUpdate(
-              product_detail,
+            let rs_url = [];
+            const re_uoload = await this.uploadService.findByName(
+              dataObj['thumbnail_2'],
             );
+            if (!re_uoload) {
+              rs_url = await this.uploadService.add([], dataObj['thumbnail_2']);
+            }
+            if (rs_pro_detail && rs_pro_detail?.name) {
+              console.log('có sửa ở đây');
+              console.log(rs_pro_detail);
+              rs_pro_detail.chapters = JSON.stringify(chapter);
+              const dsf = await this.productDetailsService.addOrUpdate(
+                rs_pro_detail,
+              );
+            } else {
+              console.log('có thêm ở đây');
+              console.log(dataObj['title']);
+              const product_detail = new ProductDetail();
+              product_detail.name = dataObj['title'];
+              product_detail.shortDescription = dataObj['alternative'];
+              product_detail.description = dataObj['content'];
+              product_detail.release = dataObj['release'];
+              product_detail.chapters = JSON.stringify(chapter);
+              product_detail.productId = index.id;
+              product_detail.projectId = 1;
+              product_detail.imageThumnail = rs_url
+                ? rs_url[0].externalLink
+                : null;
+              new_Genres.length > 0
+                ? (product_detail.genresId = JSON.stringify(new_Genres))
+                : null;
+              const dsf = await this.productDetailsService.addOrUpdate(
+                product_detail,
+              );
+            }
           }
+        } catch (exception: any) {
+          console.log(exception.stack);
+          continue;
         }
       }
       await page.close();
