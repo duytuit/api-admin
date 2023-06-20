@@ -62,7 +62,7 @@ export class DevController {
     //   'https://1stkissmanga.me/manga/schools-over-please-stay/',
     // );
     // console.log(rs_pro_detail);
-    await this.listManga();
+    await this.detailManga();
     // const rs_url = await this.uploadService.add(
     //   [],
     //   'https://1stkissmanga.me/wp-content/uploads/thumb_5d759400c4427-10220-110x150.jpg',
@@ -411,7 +411,6 @@ export class DevController {
                 await this.chapterDetailService.addOrUpdate(re_chapter_detail);
               }
             }
-            return;
           }
         }
         await page.close();
