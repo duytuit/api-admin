@@ -230,7 +230,7 @@ export class DevController {
           (item) => item.innerText,
         );
         dataObj['thumbnail_2'] = await page.$eval(
-          '.summary_image img',
+          'div.summary_image img',
           (item) => item.src,
         );
         dataObj['content'] = await page.$eval(
@@ -238,14 +238,14 @@ export class DevController {
           (item) => item.innerText,
         );
         dataObj['release'] = await page.$eval(
-          '.post-status .summary-content a',
+          'div.post-status div.summary-content a',
           (item) => item.innerText,
         );
         dataObj['alternative'] = await page.$eval(
           'div:nth-of-type(5) div.summary-content',
           (item) => item.innerText,
         );
-        const Genres = await page.$$eval('div.genres-content > a', (links) => {
+        const Genres = await page.$$eval('div.genres-content a', (links) => {
           // Make sure the book to be scraped is in stock
           // Extract the links from the data
           return links.map((el) => ({
@@ -253,13 +253,13 @@ export class DevController {
             url: el.href,
           }));
         });
-        const chapter = await page.$$eval('.wp-manga-chapter', (links) => {
+        const chapter = await page.$$eval('div.wp-manga-chapter', (links) => {
           // Make sure the book to be scraped is in stock
           // Extract the links from the data
           return links.map((el) => ({
             text: el.querySelector('a').innerText,
             url: el.querySelector('a').href,
-            post_on: el.querySelector('.chapter-release-date > i')?.innerHTML,
+            post_on: el.querySelector('div.chapter-release-date i')?.innerHTML,
           }));
         });
         dataObj['genres'] = Genres;
