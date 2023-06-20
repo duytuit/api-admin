@@ -31,6 +31,11 @@ import { Product } from '../products/entities/product.entity';
 import { ProductDetail } from '../product_details/entities/product_detail.entity';
 import { Genre } from '../genres/entities/genre.entity';
 import { Upload } from '../upload/entities/upload.entity';
+import { AjaxResult } from 'src/common/class/ajax-result.class';
+import { DataObj } from 'src/common/class/data-obj.class';
+import { debuglog } from 'util';
+import { LogDebug } from 'src/common/debugLog';
+import { ChapterDetailService } from '../chapter_detail/chapter_detail.service';
 
 @Controller('system/dev')
 @Public()
@@ -43,6 +48,7 @@ export class DevController {
     private readonly productDetailsService: ProductDetailsService,
     private readonly projectsService: ProjectsService,
     private readonly uploadService: UploadService,
+    private readonly chapterDetailService: ChapterDetailService,
   ) {}
 
   @Post()
@@ -56,13 +62,25 @@ export class DevController {
     //   'https://1stkissmanga.me/manga/schools-over-please-stay/',
     // );
     // console.log(rs_pro_detail);
-
-    await this.chapterManga();
+    await this.cateManga();
     // const rs_url = await this.uploadService.add(
     //   [],
     //   'https://1stkissmanga.me/wp-content/uploads/thumb_5d759400c4427-10220-110x150.jpg',
     // );
     // console.log(rs_url);
+    // const browser = await puppeteer.launch();
+    // const page = await browser.newPage();
+    // await page.goto(
+    //   'https://1stkissmanga.me/manga/dragon-son-in-law-god-of-war/chapter-90/',
+    // );
+    // await page.waitForSelector('#image-1');
+    // const svgImage = await page.$('#image-1');
+    // const sdfds = Math.floor(Date.now() / 1000);
+    // const sdfd = await svgImage.screenshot();
+    // const rs_url = await this.uploadService.addByBuffer(sdfd, sdfds + '.jpg');
+
+    // await page.close();
+    // await browser.close();
   }
   private async cateManga() {
     const browser = await puppeteer.launch();
@@ -149,7 +167,7 @@ export class DevController {
       // console.log(dataObj[item].thumbnail_1);
       // console.log(filename);
       const re_uoload = await this.uploadService.findByName(filename);
-      if (re_uoload.length == 0) {
+      if (!re_uoload) {
         const rs_url: any = await this.uploadService.add(
           [],
           dataObj[item].thumbnail_1,
@@ -260,7 +278,7 @@ export class DevController {
           const re_uoload = await this.uploadService.findByName(
             dataObj['thumbnail_2'],
           );
-          if (re_uoload.length == 0) {
+          if (!re_uoload) {
             rs_url = await this.uploadService.add([], dataObj['thumbnail_2']);
           }
           if (rs_pro_detail && rs_pro_detail?.name) {
@@ -326,7 +344,8 @@ export class DevController {
                 // Make sure the book to be scraped is in stock
                 // Extract the links from the data
                 const item_img = links.map((el) => ({
-                  url: el.querySelector('img').src,
+                  id_image: el.querySelector('img').id,
+                  src: el.querySelector('img').src,
                 }));
                 return item_img;
               },
@@ -335,17 +354,51 @@ export class DevController {
             console.log(dataObj);
             const all_rs_url = [];
             if (Imgs) {
-              Imgs.forEach(async (item) => {
-                const re_uoload = await this.uploadService.findByName(item.url);
+              for (let index_2 = 0; index_2 < Imgs.length; index_2++) {
+                const element_1 = Imgs[index_2];
+                const filename = element_1.src.substring(
+                  element_1.src.lastIndexOf('/') + 1,
+                );
+                const re_uoload = await this.uploadService.findByName(filename);
+                console.log(element.url);
                 console.log(re_uoload);
-                if (re_uoload.length == 0) {
-                  const rs_url = await this.uploadService.add([], item.url);
-                  console.log('kết quả trả về', rs_url);
-                  all_rs_url.push(...rs_url);
+                if (!re_uoload) {
+                  await page.waitForSelector('#' + element_1.id_image);
+                  const Image_by_id = await page.$('#' + element_1.id_image);
+                  const image_buffer = await Image_by_id.screenshot();
+                  const rs_upload = await this.uploadService.addByBuffer(
+                    image_buffer,
+                    filename,
+                  );
+                  if (rs_upload.uploadId) {
+                    console.log('kết quả trả về', rs_upload.uploadId);
+                    all_rs_url.push(rs_upload.externalLink);
+                  } else {
+                    console.log('upload file thất bại');
+                  }
+                } else {
+                  all_rs_url.push(re_uoload.externalLink);
                 }
-              });
+              }
             }
             console.log(all_rs_url);
+            if (all_rs_url.length > 0) {
+              const re_chapter_detail =
+                await this.chapterDetailService.findByLinkExternal(element.url);
+              if (!re_chapter_detail) {
+                const chapter = new ChapterDetail();
+                chapter.images = JSON.stringify(all_rs_url);
+                chapter.linkExternal = element.url;
+                chapter.name = element.text;
+                chapter.productDetailId = index.id;
+                chapter.projectId = 1;
+                await this.chapterDetailService.addOrUpdate(chapter);
+              } else {
+                re_chapter_detail.name = element.text;
+                re_chapter_detail.images = JSON.stringify(all_rs_url);
+                await this.chapterDetailService.addOrUpdate(re_chapter_detail);
+              }
+            }
             return;
           }
         }

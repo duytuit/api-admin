@@ -53,7 +53,6 @@ export class UploadService {
       const result: any = await axios.get(
         `http://45.119.87.103:8090/common/upload/path?fileUrl=${path_file}`,
       );
-      console.log(result.data.data.filename);
 
       if ((result.code = 200)) {
         const upload = new Upload();
@@ -68,7 +67,33 @@ export class UploadService {
     }
     return upload_arr;
   }
-
+  async addByBuffer(buffer, file_name) {
+    const fdata: any = {
+      buffer: buffer,
+      file_name: file_name,
+    };
+    const result: any = await axios.post(
+      'http://45.119.87.103:8090/common/upload/buffer',
+      fdata,
+      {
+        headers: {
+          'Content-Type': `application/json`,
+        },
+        maxContentLength: Infinity,
+        maxBodyLength: Infinity,
+      },
+    );
+    if ((result.data.code = 200)) {
+      const upload = new Upload();
+      upload.fileName = result.data.data.filename;
+      upload.externalLink = result.data.data.path;
+      upload.fileOriginalName = result.data.data.filename;
+      upload.sort = 1;
+      upload.extension = result.data.data.ext;
+      const data_upload = await this.uploadRepository.save(upload);
+      return data_upload;
+    }
+  }
   findAll() {
     return `This action returns all upload`;
   }
@@ -77,7 +102,7 @@ export class UploadService {
     if (name) {
       where.fileName = Like(`%${name}%`);
     }
-    return await this.uploadRepository.findBy(where);
+    return await this.uploadRepository.findOneBy(where);
   }
   /* Truy vấn thông qua ID */
   async findOne(uploadId: number) {

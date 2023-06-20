@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ChapterDetail } from './entities/chapter_detail.entity';
 import { InjectRedis, Redis } from '@nestjs-modules/ioredis';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { FindOptionsWhere, Repository, Like } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   CreateChapterDetailDto,
@@ -47,7 +47,13 @@ export class ChapterDetailService {
     }
     return rs_list ? JSON.parse(rs_list) : null;
   }
-
+  async findByLinkExternal(name: string) {
+    const where: FindOptionsWhere<ChapterDetail> = {};
+    if (name) {
+      where.linkExternal = Like(`%${name}%`);
+    }
+    return await this.chapterDetailRepository.findOneBy(where);
+  }
   findOne(id: number) {
     return `This action returns a #${id} chapterDetail`;
   }
