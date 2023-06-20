@@ -83,7 +83,10 @@ export class DevController {
     // await browser.close();
   }
   private async cateManga() {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      headless: false,
+      args: ['--no-sandbox'],
+    });
     const page = await browser.newPage();
     await page.goto('https://1stkissmanga.me/manga/?genres_collapse=on', {
       waitUntil: 'domcontentloaded',
@@ -130,7 +133,10 @@ export class DevController {
       }),
     );
     console.log(new_stkissmanga);
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      headless: false,
+      args: ['--no-sandbox'],
+    });
     const page = await browser.newPage();
     const dataObj = [];
     for (const nameUrl of new_stkissmanga) {
@@ -207,7 +213,10 @@ export class DevController {
     const list = await this.productsService.findAll();
     if (list.length > 0) {
       const dataObj = {};
-      const browser = await puppeteer.launch();
+      const browser = await puppeteer.launch({
+        headless: false,
+        args: ['--no-sandbox'],
+      });
       const page = await browser.newPage();
       for (const index of list) {
         const fullUrl = `${index.linkExternal}`;
@@ -323,7 +332,10 @@ export class DevController {
     // return;
 
     if (list.length > 0) {
-      const browser = await puppeteer.launch();
+      const browser = await puppeteer.launch({
+        headless: false,
+        args: ['--no-sandbox'],
+      });
       const page = await browser.newPage();
 
       for (const index of list) {
