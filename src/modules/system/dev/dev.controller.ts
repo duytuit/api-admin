@@ -407,7 +407,7 @@ export class DevController {
         ],
       });
       const page = await browser.newPage();
-
+      await page.setViewport({ width: 1280, height: 800 });
       for (const index of list) {
         if (index.chapters) {
           const list_chapters = JSON.parse(index.chapters);
