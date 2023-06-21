@@ -255,7 +255,7 @@ export class DevController {
             (item) => item.innerText,
           );
           dataObj['thumbnail_2'] = await page.$eval(
-            'div.summary_image img',
+            '.summary_image img',
             (item) => item.src,
           );
           dataObj['content'] = await page.$eval(
@@ -263,29 +263,31 @@ export class DevController {
             (item) => item.innerText,
           );
           dataObj['release'] = await page.$eval(
-            'div.post-status div.summary-content a',
+            '.post-status .summary-content a',
             (item) => item.innerText,
           );
           dataObj['alternative'] = await page.$eval(
             'div:nth-of-type(5) div.summary-content',
             (item) => item.innerText,
           );
-          const Genres = await page.$$eval('div.genres-content a', (links) => {
-            // Make sure the book to be scraped is in stock
-            // Extract the links from the data
-            return links.map((el) => ({
-              text: el.innerText,
-              url: el.href,
-            }));
-          });
-          const chapter = await page.$$eval('div.wp-manga-chapter', (links) => {
+          const Genres = await page.$$eval(
+            'div.genres-content > a',
+            (links) => {
+              // Make sure the book to be scraped is in stock
+              // Extract the links from the data
+              return links.map((el) => ({
+                text: el.innerText,
+                url: el.href,
+              }));
+            },
+          );
+          const chapter = await page.$$eval('.wp-manga-chapter', (links) => {
             // Make sure the book to be scraped is in stock
             // Extract the links from the data
             return links.map((el) => ({
               text: el.querySelector('a').innerText,
               url: el.querySelector('a').href,
-              post_on: el.querySelector('div.chapter-release-date i')
-                ?.innerHTML,
+              post_on: el.querySelector('.chapter-release-date > i')?.innerHTML,
             }));
           });
           dataObj['genres'] = Genres;
