@@ -486,9 +486,9 @@ export class DevController {
             }
           }
         }
-        await page.close();
-        await browser.close();
       }
+      await page.close();
+      await browser.close();
     } else {
       console.log('không tìm thấy chi tiết sản phẩm nào');
     }
