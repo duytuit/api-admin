@@ -62,8 +62,8 @@ export class DevController {
     //   'https://1stkissmanga.me/manga/schools-over-please-stay/',
     // );
     // console.log(rs_pro_detail);
-    await this.listManga();
-    console.log('================= hoàn thành list manga ===================');
+    // await this.listManga();
+    // console.log('================= hoàn thành list manga ===================');
     await this.detailManga();
     console.log(
       '================= hoàn thành detail manga ===================',
