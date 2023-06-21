@@ -404,7 +404,10 @@ export class DevController {
           for (let index_1 = 0; index_1 < list_chapters.length; index_1++) {
             const element = list_chapters[index_1];
             // Navigate to the selected page
-            await page.goto(element.url);
+            await page.goto(element.url, {
+              waitUntil: 'domcontentloaded',
+              timeout: 30000,
+            });
             dataObj['title_detail'] = await page.$eval(
               '#chapter-heading',
               (item) => item.innerHTML,
