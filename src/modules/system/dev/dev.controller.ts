@@ -201,7 +201,25 @@ export class DevController {
           }
         }
       } else {
-        console.log('tệp bị trùng lặp');
+        const search_product = await this.productsService.findByLink(
+          dataObj[item].link,
+        );
+        if (search_product.length == 0) {
+          // const search_cate = await this.categoriesService.findByLink(
+          //   dataObj[item].link_cat,
+          // );
+          const product = new Product();
+          product.name = dataObj[item].title;
+          product.projectId = 1;
+          product.rated = dataObj[item].rated;
+          product.linkExternal = dataObj[item].link;
+          product.imageThumnail = re_uoload.externalLink;
+          //  product.categoryId = search_cate ? search_cate.id : null;
+          const rs_product = await this.productsService.addOrUpdate(product);
+          console.log(rs_product);
+        } else {
+          console.log('sản phẩm bị trùng lặp');
+        }
       }
     }
 
@@ -291,34 +309,61 @@ export class DevController {
             );
             if (!re_uoload) {
               rs_url = await this.uploadService.add([], dataObj['thumbnail_2']);
-            }
-            if (rs_pro_detail && rs_pro_detail?.name) {
-              console.log('có sửa ở đây');
-              console.log(rs_pro_detail);
-              rs_pro_detail.chapters = JSON.stringify(chapter);
-              const dsf = await this.productDetailsService.addOrUpdate(
-                rs_pro_detail,
-              );
+              if (rs_pro_detail && rs_pro_detail?.name) {
+                console.log('có sửa ở đây');
+                console.log(rs_pro_detail);
+                rs_pro_detail.chapters = JSON.stringify(chapter);
+                const dsf = await this.productDetailsService.addOrUpdate(
+                  rs_pro_detail,
+                );
+              } else {
+                console.log('có thêm ở đây');
+                console.log(dataObj['title']);
+                const product_detail = new ProductDetail();
+                product_detail.name = dataObj['title'];
+                product_detail.shortDescription = dataObj['alternative'];
+                product_detail.description = dataObj['content'];
+                product_detail.release = dataObj['release'];
+                product_detail.chapters = JSON.stringify(chapter);
+                product_detail.productId = index.id;
+                product_detail.projectId = 1;
+                product_detail.imageThumnail = rs_url
+                  ? rs_url[0].externalLink
+                  : null;
+                new_Genres.length > 0
+                  ? (product_detail.genresId = JSON.stringify(new_Genres))
+                  : null;
+                const dsf = await this.productDetailsService.addOrUpdate(
+                  product_detail,
+                );
+              }
             } else {
-              console.log('có thêm ở đây');
-              console.log(dataObj['title']);
-              const product_detail = new ProductDetail();
-              product_detail.name = dataObj['title'];
-              product_detail.shortDescription = dataObj['alternative'];
-              product_detail.description = dataObj['content'];
-              product_detail.release = dataObj['release'];
-              product_detail.chapters = JSON.stringify(chapter);
-              product_detail.productId = index.id;
-              product_detail.projectId = 1;
-              product_detail.imageThumnail = rs_url
-                ? rs_url[0].externalLink
-                : null;
-              new_Genres.length > 0
-                ? (product_detail.genresId = JSON.stringify(new_Genres))
-                : null;
-              const dsf = await this.productDetailsService.addOrUpdate(
-                product_detail,
-              );
+              if (rs_pro_detail && rs_pro_detail?.name) {
+                console.log('có sửa ở đây');
+                console.log(rs_pro_detail);
+                rs_pro_detail.chapters = JSON.stringify(chapter);
+                const dsf = await this.productDetailsService.addOrUpdate(
+                  rs_pro_detail,
+                );
+              } else {
+                console.log('có thêm ở đây');
+                console.log(dataObj['title']);
+                const product_detail = new ProductDetail();
+                product_detail.name = dataObj['title'];
+                product_detail.shortDescription = dataObj['alternative'];
+                product_detail.description = dataObj['content'];
+                product_detail.release = dataObj['release'];
+                product_detail.chapters = JSON.stringify(chapter);
+                product_detail.productId = index.id;
+                product_detail.projectId = 1;
+                product_detail.imageThumnail = re_uoload.externalLink;
+                new_Genres.length > 0
+                  ? (product_detail.genresId = JSON.stringify(new_Genres))
+                  : null;
+                const dsf = await this.productDetailsService.addOrUpdate(
+                  product_detail,
+                );
+              }
             }
           }
         } catch (exception: any) {
