@@ -64,10 +64,10 @@ export class DevController {
     // console.log(rs_pro_detail);
     // await this.listManga();
     // console.log('================= hoàn thành list manga ===================');
-    await this.detailManga();
-    console.log(
-      '================= hoàn thành detail manga ===================',
-    );
+    // await this.detailManga();
+    // console.log(
+    //   '================= hoàn thành detail manga ===================',
+    // );
     await this.chapterManga();
     // const rs_url = await this.uploadService.add(
     //   [],
