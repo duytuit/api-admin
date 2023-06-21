@@ -37,6 +37,7 @@ export class ChapterDetail extends BaseEntity {
     name: 'images',
     comment: 'ảnh',
     default: null,
+    type: 'longtext',
   })
   @IsString()
   images: string;
