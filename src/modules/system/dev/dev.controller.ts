@@ -413,76 +413,94 @@ export class DevController {
           const list_chapters = JSON.parse(index.chapters);
           const dataObj = {};
           for (let index_1 = 0; index_1 < list_chapters.length; index_1++) {
-            const element = list_chapters[index_1];
-            // Navigate to the selected page
-            await page.goto(element.url, {
-              waitUntil: 'domcontentloaded',
-              timeout: 30000,
-            });
-            dataObj['title_detail'] = await page.$eval(
-              '#chapter-heading',
-              (item) => item.innerHTML,
-            );
-            const Imgs = await page.$$eval(
-              '.reading-content > .page-break',
-              (links) => {
-                // Make sure the book to be scraped is in stock
-                // Extract the links from the data
-                const item_img = links.map((el) => ({
-                  id_image: el.querySelector('img').id,
-                  src: el.querySelector('img').src,
-                }));
-                return item_img;
-              },
-            );
-            dataObj['imgs'] = Imgs;
-            console.log(dataObj);
-            const all_rs_url = [];
-            if (Imgs) {
-              for (let index_2 = 0; index_2 < Imgs.length; index_2++) {
-                const element_1 = Imgs[index_2];
-                const filename = element_1.src.substring(
-                  element_1.src.lastIndexOf('/') + 1,
-                );
-                const re_uoload = await this.uploadService.findByName(filename);
-                console.log(element.url);
-                console.log(re_uoload);
-                if (!re_uoload) {
-                  await page.waitForSelector('#' + element_1.id_image);
-                  const Image_by_id = await page.$('#' + element_1.id_image);
-                  const image_buffer = await Image_by_id.screenshot();
-                  const rs_upload = await this.uploadService.addByBuffer(
-                    image_buffer,
-                    filename,
-                  );
-                  if (rs_upload.uploadId) {
-                    console.log('kết quả trả về', rs_upload.uploadId);
-                    all_rs_url.push(rs_upload.externalLink);
-                  } else {
-                    console.log('upload file thất bại');
+            try {
+              const element = list_chapters[index_1];
+              // Navigate to the selected page
+              await page.goto(element.url, {
+                waitUntil: 'domcontentloaded',
+                timeout: 30000,
+              });
+              dataObj['title_detail'] = await page.$eval(
+                '#chapter-heading',
+                (item) => item.innerHTML,
+              );
+              const Imgs = await page.$$eval(
+                '.reading-content > .page-break',
+                (links) => {
+                  // Make sure the book to be scraped is in stock
+                  // Extract the links from the data
+                  const item_img = links.map((el) => ({
+                    id_image: el.querySelector('img').id,
+                    src: el.querySelector('img').src,
+                  }));
+                  return item_img;
+                },
+              );
+              dataObj['imgs'] = Imgs;
+              console.log(dataObj);
+              const all_rs_url = [];
+              if (Imgs) {
+                for (let index_2 = 0; index_2 < Imgs.length; index_2++) {
+                  try {
+                    const element_1 = Imgs[index_2];
+                    const filename = element_1.src.substring(
+                      element_1.src.lastIndexOf('/') + 1,
+                    );
+                    const re_uoload = await this.uploadService.findByName(
+                      filename,
+                    );
+                    console.log(element.url);
+                    console.log(re_uoload);
+                    if (!re_uoload) {
+                      await page.waitForSelector('#' + element_1.id_image);
+                      const Image_by_id = await page.$(
+                        '#' + element_1.id_image,
+                      );
+                      const image_buffer = await Image_by_id.screenshot();
+                      const rs_upload = await this.uploadService.addByBuffer(
+                        image_buffer,
+                        filename,
+                      );
+                      if (rs_upload.uploadId) {
+                        console.log('kết quả trả về', rs_upload.uploadId);
+                        all_rs_url.push(rs_upload.externalLink);
+                      } else {
+                        console.log('upload file thất bại');
+                      }
+                    } else {
+                      all_rs_url.push(re_uoload.externalLink);
+                    }
+                  } catch (exce: any) {
+                    console.log(exce.stack);
+                    continue;
                   }
-                } else {
-                  all_rs_url.push(re_uoload.externalLink);
                 }
               }
-            }
-            console.log(all_rs_url);
-            if (all_rs_url.length > 0) {
-              const re_chapter_detail =
-                await this.chapterDetailService.findByLinkExternal(element.url);
-              if (!re_chapter_detail) {
-                const chapter = new ChapterDetail();
-                chapter.images = JSON.stringify(all_rs_url);
-                chapter.linkExternal = element.url;
-                chapter.name = element.text;
-                chapter.productDetailId = index.id;
-                chapter.projectId = 1;
-                await this.chapterDetailService.addOrUpdate(chapter);
-              } else {
-                re_chapter_detail.name = element.text;
-                re_chapter_detail.images = JSON.stringify(all_rs_url);
-                await this.chapterDetailService.addOrUpdate(re_chapter_detail);
+              console.log(all_rs_url);
+              if (all_rs_url.length > 0) {
+                const re_chapter_detail =
+                  await this.chapterDetailService.findByLinkExternal(
+                    element.url,
+                  );
+                if (!re_chapter_detail) {
+                  const chapter = new ChapterDetail();
+                  chapter.images = JSON.stringify(all_rs_url);
+                  chapter.linkExternal = element.url;
+                  chapter.name = element.text;
+                  chapter.productDetailId = index.id;
+                  chapter.projectId = 1;
+                  await this.chapterDetailService.addOrUpdate(chapter);
+                } else {
+                  re_chapter_detail.name = element.text;
+                  re_chapter_detail.images = JSON.stringify(all_rs_url);
+                  await this.chapterDetailService.addOrUpdate(
+                    re_chapter_detail,
+                  );
+                }
               }
+            } catch (exce: any) {
+              console.log(exce.stack);
+              continue;
             }
           }
         }
