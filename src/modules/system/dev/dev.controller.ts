@@ -394,15 +394,15 @@ export class DevController {
       const browser = await puppeteer.launch({
         headless: true,
         args: [
-          '--disable-gpu',
-          '--disable-dev-shm-usage',
-          '--disable-setuid-sandbox',
-          '--no-first-run',
+          // '--disable-gpu',
+          // '--disable-dev-shm-usage',
+          // '--disable-setuid-sandbox',
+          // '--no-first-run',
           '--no-sandbox',
-          '--no-zygote',
-          '--deterministic-fetch',
-          '--disable-features=IsolateOrigins',
-          '--disable-site-isolation-trials',
+          // '--no-zygote',
+          // '--deterministic-fetch',
+          // '--disable-features=IsolateOrigins',
+          // '--disable-site-isolation-trials',
           // '--single-process',
         ],
       });
@@ -456,7 +456,21 @@ export class DevController {
                       const Image_by_id = await page.$(
                         '#' + element_1.id_image,
                       );
-                      const image_buffer = await Image_by_id.screenshot();
+                      const bounding_box = await Image_by_id.boundingBox();
+                      const image_buffer = await Image_by_id.screenshot({
+                        clip: {
+                          x: bounding_box.x,
+                          y: bounding_box.y,
+                          width: Math.min(
+                            bounding_box.width,
+                            page.viewport().width,
+                          ),
+                          height: Math.min(
+                            bounding_box.height,
+                            page.viewport().height,
+                          ),
+                        },
+                      });
                       const rs_upload = await this.uploadService.addByBuffer(
                         image_buffer,
                         filename,
