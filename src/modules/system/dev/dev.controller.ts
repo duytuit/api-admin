@@ -74,17 +74,72 @@ export class DevController {
     //   'https://1stkissmanga.me/wp-content/uploads/thumb_5d759400c4427-10220-110x150.jpg',
     // );
     // console.log(rs_url);
-    // const browser = await puppeteer.launch();
+    // const dataObj = {};
+    // const browser = await puppeteer.launch({
+    //   headless: true,
+    //   args: ['--no-sandbox'],
+    // });
     // const page = await browser.newPage();
     // await page.goto(
-    //   'https://1stkissmanga.me/manga/dragon-son-in-law-god-of-war/chapter-90/',
+    //   'https://1stkissmanga.me/manga/doupo-cangqiong/chapter-398/',
     // );
-    // await page.waitForSelector('#image-1');
-    // const svgImage = await page.$('#image-1');
-    // const sdfds = Math.floor(Date.now() / 1000);
-    // const sdfd = await svgImage.screenshot();
-    // const rs_url = await this.uploadService.addByBuffer(sdfd, sdfds + '.jpg');
-
+    // dataObj['title_detail'] = await page.$eval(
+    //   '#chapter-heading',
+    //   (item) => item.innerHTML,
+    // );
+    // const Imgs = await page.$$eval(
+    //   '.reading-content > .page-break',
+    //   (links) => {
+    //     // Make sure the book to be scraped is in stock
+    //     // Extract the links from the data
+    //     const item_img = links.map((el) => ({
+    //       id_image: el.querySelector('img').id,
+    //       src: el.querySelector('img').src,
+    //     }));
+    //     return item_img;
+    //   },
+    // );
+    // dataObj['imgs'] = Imgs;
+    // console.log(dataObj);
+    // const all_rs_url = [];
+    // if (Imgs) {
+    //   for (let index_2 = 0; index_2 < Imgs.length; index_2++) {
+    //     try {
+    //       const element_1 = Imgs[index_2];
+    //       const filename = element_1.src.substring(
+    //         element_1.src.lastIndexOf('/') + 1,
+    //       );
+    //       const re_uoload = await this.uploadService.findByName(filename);
+    //       console.log(re_uoload);
+    //       if (!re_uoload) {
+    //         // await page.addStyleTag({
+    //         //   content: '{scroll-behavior: auto !important;}',
+    //         // });
+    //         await page.waitForSelector('#' + element_1.id_image);
+    //         const Image_by_id = await page.$('#' + element_1.id_image);
+    //         console.log(Image_by_id);
+    //         const image_buffer = await Image_by_id.screenshot();
+    //         // await page.waitForNavigation();
+    //         const rs_upload = await this.uploadService.addByBuffer(
+    //           image_buffer,
+    //           filename,
+    //         );
+    //         if (rs_upload.uploadId) {
+    //           console.log('kết quả trả về', rs_upload.uploadId);
+    //           all_rs_url.push(rs_upload.externalLink);
+    //         } else {
+    //           console.log('upload file thất bại');
+    //         }
+    //       } else {
+    //         all_rs_url.push(re_uoload.externalLink);
+    //       }
+    //     } catch (exce: any) {
+    //       console.log(exce.stack);
+    //       continue;
+    //     }
+    //   }
+    // }
+    // console.log(all_rs_url);
     // await page.close();
     // await browser.close();
   }
@@ -393,21 +448,10 @@ export class DevController {
     if (list.length > 0) {
       const browser = await puppeteer.launch({
         headless: true,
-        args: [
-          // '--disable-gpu',
-          // '--disable-dev-shm-usage',
-          // '--disable-setuid-sandbox',
-          // '--no-first-run',
-          '--no-sandbox',
-          // '--no-zygote',
-          // '--deterministic-fetch',
-          // '--disable-features=IsolateOrigins',
-          // '--disable-site-isolation-trials',
-          // '--single-process',
-        ],
+        args: ['--no-sandbox'],
       });
-      const page = await browser.newPage();
-      await page.setViewport({ width: 1280, height: 800 });
+
+      // await page.setUserAgent('UA-TEST');
       for (const index of list) {
         if (index.chapters) {
           const list_chapters = JSON.parse(index.chapters);
@@ -416,6 +460,7 @@ export class DevController {
             try {
               const element = list_chapters[index_1];
               // Navigate to the selected page
+              const page = await browser.newPage();
               await page.goto(element.url, {
                 waitUntil: 'domcontentloaded',
                 timeout: 30000,
@@ -439,6 +484,7 @@ export class DevController {
               dataObj['imgs'] = Imgs;
               console.log(dataObj);
               const all_rs_url = [];
+
               if (Imgs) {
                 for (let index_2 = 0; index_2 < Imgs.length; index_2++) {
                   try {
@@ -452,25 +498,17 @@ export class DevController {
                     console.log(element.url);
                     console.log(re_uoload);
                     if (!re_uoload) {
+                      // await page.addStyleTag({
+                      //   content: '{scroll-behavior: auto !important;}',
+                      // });
                       await page.waitForSelector('#' + element_1.id_image);
                       const Image_by_id = await page.$(
                         '#' + element_1.id_image,
                       );
-                      const bounding_box = await Image_by_id.boundingBox();
-                      const image_buffer = await Image_by_id.screenshot({
-                        clip: {
-                          x: bounding_box.x,
-                          y: bounding_box.y,
-                          width: Math.min(
-                            bounding_box.width,
-                            page.viewport().width,
-                          ),
-                          height: Math.min(
-                            bounding_box.height,
-                            page.viewport().height,
-                          ),
-                        },
-                      });
+                      console.log(Image_by_id);
+
+                      const image_buffer = await Image_by_id.screenshot();
+                      // await page.waitForNavigation();
                       const rs_upload = await this.uploadService.addByBuffer(
                         image_buffer,
                         filename,
@@ -512,15 +550,14 @@ export class DevController {
                   );
                 }
               }
+              await page.close();
             } catch (exce: any) {
               console.log(exce.stack);
               console.log(index);
-              return;
             }
           }
         }
       }
-      await page.close();
       await browser.close();
     } else {
       console.log('không tìm thấy chi tiết sản phẩm nào');
