@@ -68,7 +68,7 @@ export class DevController {
     // console.log(
     //   '================= hoàn thành detail manga ===================',
     // );
-    await this.chapterManga();
+    //await this.chapterManga();
     // const rs_url = await this.uploadService.add(
     //   [],
     //   'https://1stkissmanga.me/wp-content/uploads/thumb_5d759400c4427-10220-110x150.jpg',
@@ -81,7 +81,7 @@ export class DevController {
     // });
     // const page = await browser.newPage();
     // await page.goto(
-    //   'https://1stkissmanga.me/manga/doupo-cangqiong/chapter-398/',
+    //   'https://1stkissmanga.me/manga/doupo-cangqiong/chapter-389/',
     // );
     // dataObj['title_detail'] = await page.$eval(
     //   '#chapter-heading',
@@ -446,11 +446,6 @@ export class DevController {
     // return;
 
     if (list.length > 0) {
-      const browser = await puppeteer.launch({
-        headless: true,
-        args: ['--no-sandbox'],
-      });
-
       // await page.setUserAgent('UA-TEST');
       for (const index of list) {
         if (index.chapters) {
@@ -459,6 +454,10 @@ export class DevController {
           for (let index_1 = 0; index_1 < list_chapters.length; index_1++) {
             try {
               const element = list_chapters[index_1];
+              const browser = await puppeteer.launch({
+                headless: true,
+                args: ['--no-sandbox'],
+              });
               // Navigate to the selected page
               const page = await browser.newPage();
               await page.goto(element.url, {
@@ -551,6 +550,7 @@ export class DevController {
                 }
               }
               await page.close();
+              await browser.close();
             } catch (exce: any) {
               console.log(exce.stack);
               console.log(index);
@@ -558,7 +558,6 @@ export class DevController {
           }
         }
       }
-      await browser.close();
     } else {
       console.log('không tìm thấy chi tiết sản phẩm nào');
     }
