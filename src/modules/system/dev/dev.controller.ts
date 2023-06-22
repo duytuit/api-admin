@@ -68,77 +68,77 @@ export class DevController {
     // console.log(
     //   '================= hoàn thành detail manga ===================',
     // );
-    // await this.chapterManga();
+    await this.chapterManga();
     // const rs_url = await this.uploadService.add(
     //   [],
     //   'https://1stkissmanga.me/wp-content/uploads/thumb_5d759400c4427-10220-110x150.jpg',
     // );
     // console.log(rs_url);
 
-    const dataObj = {};
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ['--no-sandbox'],
-    });
-    const page = await browser.newPage();
-    await page.goto(
-      'https://1stkissmanga.me/manga/doupo-cangqiong/chapter-389/',
-    );
-    dataObj['title_detail'] = await page.$eval(
-      '#chapter-heading',
-      (item) => item.innerHTML,
-    );
-    const Imgs = await page.$$eval(
-      '.reading-content > .page-break',
-      (links) => {
-        // Make sure the book to be scraped is in stock
-        // Extract the links from the data
-        const item_img = links.map((el) => ({
-          id_image: el.querySelector('img').id,
-          src: el.querySelector('img').src,
-        }));
-        return item_img;
-      },
-    );
-    dataObj['imgs'] = Imgs;
-    console.log(dataObj);
-    const all_rs_url = [];
-    if (Imgs) {
-      for (let index_2 = 0; index_2 < Imgs.length; index_2++) {
-        try {
-          const element_1 = Imgs[index_2];
-          const filename = element_1.src.substring(
-            element_1.src.lastIndexOf('/') + 1,
-          );
-          // await page.addStyleTag({
-          //   content: '{scroll-behavior: auto !important;}',
-          // });
-          await page.waitForSelector('#' + element_1.id_image);
-          const Image_by_id = await page.$('#' + element_1.id_image);
-          console.log(Image_by_id);
+    // const dataObj = {};
+    // const browser = await puppeteer.launch({
+    //   headless: true,
+    //   args: ['--no-sandbox'],
+    // });
+    // const page = await browser.newPage();
+    // await page.goto(
+    //   'https://1stkissmanga.me/manga/doupo-cangqiong/chapter-389/',
+    // );
+    // dataObj['title_detail'] = await page.$eval(
+    //   '#chapter-heading',
+    //   (item) => item.innerHTML,
+    // );
+    // const Imgs = await page.$$eval(
+    //   '.reading-content > .page-break',
+    //   (links) => {
+    //     // Make sure the book to be scraped is in stock
+    //     // Extract the links from the data
+    //     const item_img = links.map((el) => ({
+    //       id_image: el.querySelector('img').id,
+    //       src: el.querySelector('img').src,
+    //     }));
+    //     return item_img;
+    //   },
+    // );
+    // dataObj['imgs'] = Imgs;
+    // console.log(dataObj);
+    // const all_rs_url = [];
+    // if (Imgs) {
+    //   for (let index_2 = 0; index_2 < Imgs.length; index_2++) {
+    //     try {
+    //       const element_1 = Imgs[index_2];
+    //       const filename = element_1.src.substring(
+    //         element_1.src.lastIndexOf('/') + 1,
+    //       );
+    //       // await page.addStyleTag({
+    //       //   content: '{scroll-behavior: auto !important;}',
+    //       // });
+    //       await page.waitForSelector('#' + element_1.id_image);
+    //       const Image_by_id = await page.$('#' + element_1.id_image);
+    //       console.log(Image_by_id);
 
-          const image_buffer = await Image_by_id.screenshot();
-          // await page.waitForNavigation();
-          const rs_upload = await this.uploadService.addByBuffer(
-            image_buffer,
-            filename,
-            null,
-          );
-          if (rs_upload.uploadId) {
-            console.log('kết quả trả về', rs_upload.uploadId);
-            all_rs_url.push(rs_upload.externalLink);
-          } else {
-            console.log('upload file thất bại');
-          }
-        } catch (exce: any) {
-          console.log(exce.stack);
-          continue;
-        }
-      }
-    }
-    console.log(all_rs_url);
-    await page.close();
-    await browser.close();
+    //       const image_buffer = await Image_by_id.screenshot();
+    //       // await page.waitForNavigation();
+    //       const rs_upload = await this.uploadService.addByBuffer(
+    //         image_buffer,
+    //         filename,
+    //         null,
+    //       );
+    //       if (rs_upload.uploadId) {
+    //         console.log('kết quả trả về', rs_upload.uploadId);
+    //         all_rs_url.push(rs_upload.externalLink);
+    //       } else {
+    //         console.log('upload file thất bại');
+    //       }
+    //     } catch (exce: any) {
+    //       console.log(exce.stack);
+    //       continue;
+    //     }
+    //   }
+    // }
+    // console.log(all_rs_url);
+    // await page.close();
+    // await browser.close();
   }
   private async cateManga() {
     const browser = await puppeteer.launch({
