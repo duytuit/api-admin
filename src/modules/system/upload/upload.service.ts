@@ -19,7 +19,7 @@ export class UploadService {
     files?: Array<Express.Multer.File>,
     path_file?: string,
     folder?: string,
-    gettime?,
+    gettime?: boolean,
   ): Promise<any[]> {
     const upload_arr = [];
     if (files.length > 0) {
@@ -55,10 +55,13 @@ export class UploadService {
     }
     if (path_file) {
       const url = folder
-        ? `http://45.119.87.103:8090/common/upload/path?folder=${folder}&fileUrl=${path_file}`
-        : `http://45.119.87.103:8090/common/upload/path?fileUrl=${path_file}`;
-      const new_url = gettime ? `${url}&gettime=${gettime}` : url;
-      const result: any = await axios.get(new_url);
+        ? gettime
+          ? `http://45.119.87.103:8090/common/upload/buffer?folder=${folder}&gettime=${gettime}`
+          : `http://45.119.87.103:8090/common/upload/buffer?folder=${folder}`
+        : gettime
+        ? `http://45.119.87.103:8090/common/upload/buffer?gettime=${gettime}`
+        : `http://45.119.87.103:8090/common/upload/buffer`;
+      const result: any = await axios.get(url);
 
       if ((result.code = 200)) {
         const upload = new Upload();
@@ -78,16 +81,20 @@ export class UploadService {
    * @param file_name truyền tên file vào đây
    * @returns kết quả trả về là
    */
-  async addByBuffer(buffer, file_name, folder?: string, gettime?) {
+  async addByBuffer(buffer, file_name, folder?: string, gettime?: boolean) {
     const fdata: any = {
       buffer: buffer,
       file_name: file_name,
     };
     const url = folder
-      ? `http://45.119.87.103:8090/common/upload/buffer?folder=${folder}`
-      : 'http://45.119.87.103:8090/common/upload/buffer';
-    const new_url = gettime ? `${url}&gettime=${gettime}` : url;
-    const result: any = await axios.post(new_url, fdata, {
+      ? gettime
+        ? `http://45.119.87.103:8090/common/upload/buffer?folder=${folder}&gettime=${gettime}`
+        : `http://45.119.87.103:8090/common/upload/buffer?folder=${folder}`
+      : gettime
+      ? `http://45.119.87.103:8090/common/upload/buffer?gettime=${gettime}`
+      : `http://45.119.87.103:8090/common/upload/buffer`;
+    console.log(url);
+    const result: any = await axios.post(url, fdata, {
       headers: {
         'Content-Type': `application/json`,
       },
