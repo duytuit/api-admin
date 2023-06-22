@@ -491,35 +491,27 @@ export class DevController {
                     const filename = element_1.src.substring(
                       element_1.src.lastIndexOf('/') + 1,
                     );
-                    const re_uoload = await this.uploadService.findByName(
-                      filename,
-                    );
                     console.log(element.url);
-                    console.log(re_uoload);
-                    if (!re_uoload) {
-                      // await page.addStyleTag({
-                      //   content: '{scroll-behavior: auto !important;}',
-                      // });
-                      await page.waitForSelector('#' + element_1.id_image);
-                      const Image_by_id = await page.$(
-                        '#' + element_1.id_image,
-                      );
-                      console.log(Image_by_id);
+                    // await page.addStyleTag({
+                    //   content: '{scroll-behavior: auto !important;}',
+                    // });
+                    await page.waitForSelector('#' + element_1.id_image);
+                    const Image_by_id = await page.$('#' + element_1.id_image);
+                    console.log(Image_by_id);
 
-                      const image_buffer = await Image_by_id.screenshot();
-                      // await page.waitForNavigation();
-                      const rs_upload = await this.uploadService.addByBuffer(
-                        image_buffer,
-                        filename,
-                      );
-                      if (rs_upload.uploadId) {
-                        console.log('kết quả trả về', rs_upload.uploadId);
-                        all_rs_url.push(rs_upload.externalLink);
-                      } else {
-                        console.log('upload file thất bại');
-                      }
+                    const image_buffer = await Image_by_id.screenshot();
+                    // await page.waitForNavigation();
+                    const rs_upload = await this.uploadService.addByBuffer(
+                      image_buffer,
+                      filename,
+                      null,
+                      true,
+                    );
+                    if (rs_upload.uploadId) {
+                      console.log('kết quả trả về', rs_upload.uploadId);
+                      all_rs_url.push(rs_upload.externalLink);
                     } else {
-                      all_rs_url.push(re_uoload.externalLink);
+                      console.log('upload file thất bại');
                     }
                   } catch (exce: any) {
                     console.log(exce.stack);

@@ -15,22 +15,26 @@ export class UploadService {
     @InjectRepository(Upload)
     private readonly uploadRepository: Repository<Upload>,
   ) {}
-  async add(files?: Array<Express.Multer.File>, path_file?: string) {
+  async add(
+    files?: Array<Express.Multer.File>,
+    path_file?: string,
+    folder?: string,
+    gettime?,
+  ): Promise<any[]> {
     const upload_arr = [];
     if (files.length > 0) {
       const fdata: any = new FormData();
       files.forEach((item) => {
         fdata.append('files', item.buffer, item.originalname);
       });
-      const result: any = await axios.post(
-        'http://45.119.87.103:8090/common/uploads',
-        fdata,
-        {
-          headers: {
-            'Content-Type': `multipart/form-data; boundary=${fdata.getBoundary()}`,
-          },
+      const url = folder
+        ? `http://45.119.87.103:8090/common/uploads?folder=${folder}`
+        : 'http://45.119.87.103:8090/common/uploads';
+      const result: any = await axios.post(url, fdata, {
+        headers: {
+          'Content-Type': `multipart/form-data; boundary=${fdata.getBoundary()}`,
         },
-      );
+      });
 
       if ((result.code = 200)) {
         const data_upload = await Promise.all(
@@ -50,9 +54,11 @@ export class UploadService {
       }
     }
     if (path_file) {
-      const result: any = await axios.get(
-        `http://45.119.87.103:8090/common/upload/path?fileUrl=${path_file}`,
-      );
+      const url = folder
+        ? `http://45.119.87.103:8090/common/upload/path?folder=${folder}&fileUrl=${path_file}`
+        : `http://45.119.87.103:8090/common/upload/path?fileUrl=${path_file}`;
+      const new_url = gettime ? `${url}&gettime=${gettime}` : url;
+      const result: any = await axios.get(new_url);
 
       if ((result.code = 200)) {
         const upload = new Upload();
@@ -67,22 +73,27 @@ export class UploadService {
     }
     return upload_arr;
   }
-  async addByBuffer(buffer, file_name) {
+  /**
+   * @param buffer đây là file buffer
+   * @param file_name truyền tên file vào đây
+   * @returns kết quả trả về là
+   */
+  async addByBuffer(buffer, file_name, folder?: string, gettime?) {
     const fdata: any = {
       buffer: buffer,
       file_name: file_name,
     };
-    const result: any = await axios.post(
-      'http://45.119.87.103:8090/common/upload/buffer',
-      fdata,
-      {
-        headers: {
-          'Content-Type': `application/json`,
-        },
-        maxContentLength: Infinity,
-        maxBodyLength: Infinity,
+    const url = folder
+      ? `http://45.119.87.103:8090/common/upload/buffer?folder=${folder}`
+      : 'http://45.119.87.103:8090/common/upload/buffer';
+    const new_url = gettime ? `${url}&gettime=${gettime}` : url;
+    const result: any = await axios.post(new_url, fdata, {
+      headers: {
+        'Content-Type': `application/json`,
       },
-    );
+      maxContentLength: Infinity,
+      maxBodyLength: Infinity,
+    });
     if ((result.data.code = 200)) {
       const upload = new Upload();
       upload.fileName = result.data.data.filename;
@@ -94,6 +105,9 @@ export class UploadService {
       return data_upload;
     }
   }
+  /**
+   * @returns trả về danh sách sản phẩm
+   */
   findAll() {
     return `This action returns all upload`;
   }
