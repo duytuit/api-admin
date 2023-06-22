@@ -68,7 +68,7 @@ export class DevController {
     // console.log(
     //   '================= hoàn thành detail manga ===================',
     // );
-    //await this.chapterManga();
+    await this.chapterManga();
     // const rs_url = await this.uploadService.add(
     //   [],
     //   'https://1stkissmanga.me/wp-content/uploads/thumb_5d759400c4427-10220-110x150.jpg',
