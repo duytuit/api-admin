@@ -514,7 +514,8 @@ export class DevController {
               }
             } catch (exce: any) {
               console.log(exce.stack);
-              continue;
+              console.log(index);
+              return;
             }
           }
         }
