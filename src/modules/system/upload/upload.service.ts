@@ -85,13 +85,10 @@ export class UploadService {
     const fdata: any = {
       buffer: buffer,
       file_name: file_name,
+      gettime: gettime,
     };
     const url = folder
-      ? gettime
-        ? `http://45.119.87.103:8090/common/upload/buffer?folder=${folder}&gettime=${gettime}`
-        : `http://45.119.87.103:8090/common/upload/buffer?folder=${folder}`
-      : gettime
-      ? `http://45.119.87.103:8090/common/upload/buffer?gettime=${gettime}`
+      ? `http://45.119.87.103:8090/common/upload/buffer?folder=${folder}`
       : `http://45.119.87.103:8090/common/upload/buffer`;
     console.log(url);
     const result: any = await axios.post(url, fdata, {
