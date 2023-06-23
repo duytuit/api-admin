@@ -21,4 +21,22 @@ export class Helper {
     }
     return result;
   }
+  static getTimeNow(name_log?: string) {
+    const today = new Date();
+    const all_time =
+      today.getFullYear() +
+      '-' +
+      (today.getMonth() + 1) +
+      '-' +
+      today.getDate() +
+      ' ' +
+      today.getHours() +
+      ':' +
+      today.getMinutes() +
+      ':' +
+      today.getSeconds() +
+      ':' +
+      today.getMilliseconds();
+    console.log(name_log, all_time);
+  }
 }

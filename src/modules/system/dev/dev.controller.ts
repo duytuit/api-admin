@@ -36,6 +36,8 @@ import { DataObj } from 'src/common/class/data-obj.class';
 import { debuglog } from 'util';
 import { LogDebug } from 'src/common/debugLog';
 import { ChapterDetailService } from '../chapter_detail/chapter_detail.service';
+import { Helper } from 'src/common/utils/helper';
+import { InjectRedis, Redis } from '@nestjs-modules/ioredis';
 
 @Controller('system/dev')
 @Public()
@@ -49,6 +51,8 @@ export class DevController {
     private readonly projectsService: ProjectsService,
     private readonly uploadService: UploadService,
     private readonly chapterDetailService: ChapterDetailService,
+    @InjectRedis()
+    private readonly redis: Redis,
   ) {}
 
   @Post()
@@ -68,13 +72,12 @@ export class DevController {
     // console.log(
     //   '================= hoàn thành detail manga ===================',
     // );
-    await this.chapterManga();
     // const rs_url = await this.uploadService.add(
     //   [],
     //   'https://1stkissmanga.me/wp-content/uploads/thumb_5d759400c4427-10220-110x150.jpg',
     // );
     // console.log(rs_url);
-
+    this.getQueueProductdetail();
     // const dataObj = {};
     // const browser = await puppeteer.launch({
     //   headless: true,
@@ -116,7 +119,6 @@ export class DevController {
     //       await page.waitForSelector('#' + element_1.id_image);
     //       const Image_by_id = await page.$('#' + element_1.id_image);
     //       console.log(Image_by_id);
-
     //       const image_buffer = await Image_by_id.screenshot();
     //       // await page.waitForNavigation();
     //       const rs_upload = await this.uploadService.addByBuffer(
@@ -437,6 +439,129 @@ export class DevController {
       console.log('không tìm thấy sản phẩm nào');
     }
   }
+  @Get('setProductDetail')
+  async setQueueProductdetail() {
+    const list = await this.productDetailsService.findAll();
+
+    if (list.length > 0) {
+      const object_chapter = [];
+      for (const index of list) {
+        if (index.chapters) {
+          const list_chapters = JSON.parse(index.chapters);
+          for (let index_1 = 0; index_1 < list_chapters.length; index_1++) {
+            const element = list_chapters[index_1];
+            element['product'] = index;
+            this.redis.rpush('product_detail', JSON.stringify(element));
+          }
+        }
+      }
+    }
+  }
+  private async getQueueProductdetail() {
+    let product_detail = null;
+    do {
+      product_detail = await this.redis.lpop('product_detail');
+      if (product_detail) {
+        product_detail = JSON.parse(product_detail);
+        try {
+          const dataObj = {};
+          const browser = await puppeteer.launch({
+            headless: true,
+            args: ['--no-sandbox'],
+          });
+          // Navigate to the selected page
+          const page = await browser.newPage();
+          await page.goto(product_detail.url, {
+            waitUntil: 'domcontentloaded',
+            timeout: 30000,
+          });
+          dataObj['title_detail'] = await page.$eval(
+            '#chapter-heading',
+            (item) => item.innerHTML,
+          );
+          const Imgs = await page.$$eval(
+            '.reading-content > .page-break',
+            (links) => {
+              // Make sure the book to be scraped is in stock
+              // Extract the links from the data
+              const item_img = links.map((el) => ({
+                id_image: el.querySelector('img').id,
+                src: el.querySelector('img').src,
+              }));
+              return item_img;
+            },
+          );
+          dataObj['imgs'] = Imgs;
+          console.log(dataObj);
+          const all_rs_url = [];
+
+          if (Imgs) {
+            for (let index_2 = 0; index_2 < Imgs.length; index_2++) {
+              try {
+                const element_1 = Imgs[index_2];
+                const filename = element_1.src.substring(
+                  element_1.src.lastIndexOf('/') + 1,
+                );
+                console.log(product_detail.url);
+                // await page.addStyleTag({
+                //   content: '{scroll-behavior: auto !important;}',
+                // });
+                Helper.getTimeNow('lấy id image');
+                await page.waitForSelector('#' + element_1.id_image);
+                const Image_by_id = await page.$('#' + element_1.id_image);
+                console.log(Image_by_id);
+                Helper.getTimeNow('lấy được element image');
+                const image_buffer = await Image_by_id.screenshot();
+                Helper.getTimeNow('lấy image buffer');
+                // await page.waitForNavigation();
+                const rs_upload = await this.uploadService.addByBuffer(
+                  image_buffer,
+                  filename,
+                  null,
+                  true,
+                );
+                Helper.getTimeNow('thêm ảnh vào upload');
+                if (rs_upload.uploadId) {
+                  console.log('kết quả trả về', rs_upload.uploadId);
+                  all_rs_url.push(rs_upload.externalLink);
+                } else {
+                  console.log('upload file thất bại');
+                }
+              } catch (exce: any) {
+                console.log(exce.stack);
+                continue;
+              }
+            }
+          }
+          console.log(all_rs_url);
+          if (all_rs_url.length > 0) {
+            const re_chapter_detail =
+              await this.chapterDetailService.findByLinkExternal(
+                product_detail.url,
+              );
+            if (!re_chapter_detail) {
+              const chapter = new ChapterDetail();
+              chapter.images = JSON.stringify(all_rs_url);
+              chapter.linkExternal = product_detail.url;
+              chapter.name = product_detail.text;
+              chapter.productDetailId = product_detail.product.id;
+              chapter.projectId = 1;
+              await this.chapterDetailService.addOrUpdate(chapter);
+            } else {
+              re_chapter_detail.name = product_detail.text;
+              re_chapter_detail.images = JSON.stringify(all_rs_url);
+              await this.chapterDetailService.addOrUpdate(re_chapter_detail);
+            }
+          }
+          await page.close();
+          await browser.close();
+        } catch (exce: any) {
+          console.log(exce.stack);
+          console.log(product_detail);
+        }
+      }
+    } while (product_detail);
+  }
   private async chapterManga() {
     const list = await this.productDetailsService.findAll();
     // console.log(list);
@@ -492,11 +617,13 @@ export class DevController {
                     // await page.addStyleTag({
                     //   content: '{scroll-behavior: auto !important;}',
                     // });
+                    Helper.getTimeNow('lấy id image');
                     await page.waitForSelector('#' + element_1.id_image);
                     const Image_by_id = await page.$('#' + element_1.id_image);
                     console.log(Image_by_id);
-
+                    Helper.getTimeNow('lấy được element image');
                     const image_buffer = await Image_by_id.screenshot();
+                    Helper.getTimeNow('lấy image buffer');
                     // await page.waitForNavigation();
                     const rs_upload = await this.uploadService.addByBuffer(
                       image_buffer,
