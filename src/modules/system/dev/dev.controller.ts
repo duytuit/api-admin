@@ -456,6 +456,7 @@ export class DevController {
         }
       }
     }
+    console.log('tải xong.');
   }
   private async getQueueProductdetail() {
     let product_detail = null;
