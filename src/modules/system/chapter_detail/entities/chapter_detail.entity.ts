@@ -49,8 +49,8 @@ export class ChapterDetail extends BaseEntity {
     default: null,
   })
   @IsNumber()
-  @IsOptional()
-  projectId: number | null;
+  @Type()
+  projectId: number;
 
   /* Product Detail Id */
   @Column({

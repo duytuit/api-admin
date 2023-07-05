@@ -69,8 +69,7 @@ export class Service extends BaseEntity {
   })
   @IsNumber()
   @Type()
-  @IsOptional()
-  projectId: number | null;
+  projectId: number;
 
   @Column({
     name: 'status',

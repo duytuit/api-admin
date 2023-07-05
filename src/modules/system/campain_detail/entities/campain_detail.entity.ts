@@ -93,6 +93,5 @@ export class CampainDetail extends BaseEntity {
   })
   @IsNumber()
   @Type()
-  @IsOptional()
   projectId: number;
 }

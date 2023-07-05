@@ -10,4 +10,7 @@ export class ReqCustomerList extends PaginationDto {
   @IsOptional()
   @IsString()
   name: string;
+
+  @IsString()
+  projectId: string;
 }

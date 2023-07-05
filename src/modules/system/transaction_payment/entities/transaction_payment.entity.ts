@@ -83,7 +83,6 @@ export class TransactionPayment extends BaseEntity {
   })
   @IsNumber()
   @Type()
-  @IsOptional()
   projectId: number;
 
   @Column({

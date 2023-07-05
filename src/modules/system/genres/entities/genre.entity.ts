@@ -40,7 +40,7 @@ export class Genre extends BaseEntity {
   })
   @IsNumber()
   @Type()
-  projectId: number | null;
+  projectId: number;
 
   @Column({
     name: 'status',

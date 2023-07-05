@@ -145,7 +145,6 @@ export class Receipt extends BaseEntity {
   })
   @IsNumber()
   @Type()
-  @IsOptional()
   projectId: number;
 
   /* bill Id */

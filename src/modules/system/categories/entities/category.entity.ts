@@ -81,8 +81,8 @@ export class Category extends BaseEntity {
     default: null,
   })
   @IsNumber()
-  @IsOptional()
-  projectId: number | null;
+  @Type()
+  projectId: number;
 
   /* Danh mục cha Id */
   @Column({

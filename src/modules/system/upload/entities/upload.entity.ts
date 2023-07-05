@@ -83,7 +83,8 @@ export class Upload extends BaseEntity {
     default: null,
   })
   @IsNumber()
-  projectId: number | null;
+  @Type()
+  projectId: number;
 
   @Column({
     name: 'status',

@@ -134,7 +134,6 @@ export class Bill extends BaseEntity {
   })
   @IsNumber()
   @Type()
-  @IsOptional()
   projectId: number;
 
   /* approved Id */

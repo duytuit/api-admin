@@ -81,6 +81,7 @@ export class ProductDetail extends BaseEntity {
   })
   @IsString()
   genresId: string;
+
   /* Project Id */
   @Column({
     name: 'project_id',
@@ -89,7 +90,7 @@ export class ProductDetail extends BaseEntity {
   })
   @IsNumber()
   @Type()
-  projectId: number | null;
+  projectId: number;
 
   /* Product Id */
   @Column({

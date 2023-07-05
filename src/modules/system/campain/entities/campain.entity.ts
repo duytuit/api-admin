@@ -116,6 +116,5 @@ export class Campain extends BaseEntity {
   })
   @IsNumber()
   @Type()
-  @IsOptional()
   projectId: number;
 }

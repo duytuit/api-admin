@@ -6,10 +6,20 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
+  Req,
 } from '@nestjs/common';
 import { CustomerService } from './customer.service';
-import { CreateCustomerDto, UpdateCustomerDto } from './dto/req-customer.dto';
+import {
+  CreateCustomerDto,
+  ReqCustomerList,
+  UpdateCustomerDto,
+} from './dto/req-customer.dto';
 import { Public } from 'src/common/decorators/public.decorator';
+import { Customer } from './entities/customer.entity';
+import { DataObj } from 'src/common/class/data-obj.class';
+import { ApiPaginatedResponse } from 'src/common/decorators/api-paginated-response.decorator';
+import { PaginationPipe } from 'src/common/pipes/pagination.pipe';
 
 @Controller('system/customer')
 @Public()
@@ -25,9 +35,14 @@ export class CustomerController {
     return this.customerService.addOrUpdate(UpdateCustomerDto);
   }
 
-  @Get()
-  findAll() {
-    return this.customerService.findAll();
+  @Get('list')
+  @ApiPaginatedResponse(Customer)
+  async findAll(
+    @Req() req,
+    @Query(PaginationPipe) ReqCustomerList: ReqCustomerList,
+  ) {
+    const rs_list = await this.customerService.list(req, ReqCustomerList);
+    return DataObj.create(rs_list);
   }
 
   @Get(':id')

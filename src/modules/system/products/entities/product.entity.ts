@@ -131,8 +131,7 @@ export class Product extends BaseEntity {
   })
   @IsNumber()
   @Type()
-  @IsOptional()
-  projectId: number | null;
+  projectId: number;
 
   @Column({
     name: 'status',
