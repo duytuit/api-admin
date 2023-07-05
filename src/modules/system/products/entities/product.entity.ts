@@ -121,7 +121,7 @@ export class Product extends BaseEntity {
   @IsNumber()
   @Type()
   @IsOptional()
-  categoryId: number | null;
+  categoryId: number;
 
   /* Project Id */
   @Column({

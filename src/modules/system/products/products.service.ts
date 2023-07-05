@@ -38,6 +38,9 @@ export class ProductsService {
       if (reqProductList.projectId) {
         where.projectId = reqProductList.projectId;
       }
+      if (reqProductList.categoryId) {
+        where.categoryId = reqProductList.categoryId;
+      }
       const result = await this.productRepository.findAndCount({
         where,
         skip: reqProductList.skip,

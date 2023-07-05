@@ -14,4 +14,9 @@ export class ReqServiceList extends PaginationDto {
   @IsNumber()
   @Type()
   projectId: number;
+
+  @IsNumber()
+  @Type()
+  @IsOptional()
+  categoryId: number;
 }

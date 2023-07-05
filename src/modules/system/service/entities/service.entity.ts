@@ -61,6 +61,17 @@ export class Service extends BaseEntity {
   @IsOptional()
   type: number;
 
+  /* Category Id */
+  @Column({
+    name: 'category_id',
+    comment: 'Id danh mục',
+    default: null,
+  })
+  @IsNumber()
+  @Type()
+  @IsOptional()
+  categoryId: number;
+
   /* Project Id */
   @Column({
     name: 'project_id',

@@ -32,6 +32,9 @@ export class ServiceService {
       if (ReqServiceList.projectId) {
         where.projectId = ReqServiceList.projectId;
       }
+      if (ReqServiceList.categoryId) {
+        where.categoryId = ReqServiceList.categoryId;
+      }
       const result = await this.ServiceRepository.findAndCount({
         where,
         skip: ReqServiceList.skip,
