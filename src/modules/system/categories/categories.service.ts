@@ -29,6 +29,9 @@ export class CategoriesService {
       // if (reqCategoryList.name) {
       //   where.name = Like(`%${reqCategoryList.name}%`);
       // }
+      if (reqCategoryList.projectId) {
+        where.projectId = reqCategoryList.projectId;
+      }
       const result = await this.categoryRepository.findAndCount({
         select: ['name', 'createBy', 'createTime', 'status'],
         where,
