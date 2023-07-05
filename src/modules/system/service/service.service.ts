@@ -29,6 +29,9 @@ export class ServiceService {
       // if (reqServiceList.name) {
       //   where.name = Like(`%${reqServiceList.name}%`);
       // }
+      if (ReqServiceList.projectId) {
+        where.projectId = ReqServiceList.projectId;
+      }
       const result = await this.ServiceRepository.findAndCount({
         where,
         skip: ReqServiceList.skip,

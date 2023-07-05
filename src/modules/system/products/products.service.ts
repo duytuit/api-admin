@@ -35,6 +35,9 @@ export class ProductsService {
       // if (reqProductList.name) {
       //   where.name = Like(`%${reqProductList.name}%`);
       // }
+      if (reqProductList.projectId) {
+        where.projectId = reqProductList.projectId;
+      }
       const result = await this.productRepository.findAndCount({
         where,
         skip: reqProductList.skip,
