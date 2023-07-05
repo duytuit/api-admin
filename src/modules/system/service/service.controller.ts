@@ -6,10 +6,20 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
+  Req,
 } from '@nestjs/common';
 import { ServiceService } from './service.service';
-import { CreateServiceDto, UpdateServiceDto } from './dto/req-service.dto';
+import {
+  CreateServiceDto,
+  ReqServiceList,
+  UpdateServiceDto,
+} from './dto/req-service.dto';
 import { Public } from 'src/common/decorators/public.decorator';
+import { DataObj } from 'src/common/class/data-obj.class';
+import { ApiPaginatedResponse } from 'src/common/decorators/api-paginated-response.decorator';
+import { PaginationPipe } from 'src/common/pipes/pagination.pipe';
+import { Service } from './entities/service.entity';
 
 @Controller('system/service')
 @Public()
@@ -25,9 +35,14 @@ export class ServiceController {
     return this.serviceService.addOrUpdate(UpdateServiceDto);
   }
 
-  @Get()
-  findAll() {
-    return this.serviceService.findAll();
+  @Get('list')
+  @ApiPaginatedResponse(Service)
+  async findAll(
+    @Req() req,
+    @Query(PaginationPipe) ReqServiceList: ReqServiceList,
+  ) {
+    const rs_list = await this.serviceService.list(req, ReqServiceList);
+    return DataObj.create(rs_list);
   }
 
   @Get(':id')

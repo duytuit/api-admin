@@ -51,5 +51,6 @@ export class Currency extends BaseEntity {
   })
   @Type()
   @IsNumber()
+  @IsOptional()
   status: number;
 }
