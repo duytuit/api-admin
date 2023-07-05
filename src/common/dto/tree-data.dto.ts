@@ -1,11 +1,11 @@
 export class TreeDataDto {
-  /* id值 */
+  /* Giá trị ID */
   id: number;
 
-  /* 名称 */
+  /* tên */
   label: string;
 
-  /* 子项数组 */
+  /* Sub -array */
   // eslint-disable-next-line @typescript-eslint/ban-types
   children?: TreeDataDto[];
 }

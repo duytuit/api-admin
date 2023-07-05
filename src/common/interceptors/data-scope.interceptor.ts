@@ -3,7 +3,7 @@
  * @Date: 2022-01-05 19:43:12
  * @LastEditTime: 2022-10-17 15:37:29
  * @LastEditors: Please set LastEditors
- * @Description: 数据权限拦截器
+ * @Description: Quyền dữ liệu đánh chặn
  * @FilePath: \meimei-admin\src\common\interceptors\data-scope.interceptor.ts
  * You can you up，no can no bb！！
  */
@@ -41,11 +41,11 @@ export class DataScopeInterceptor implements NestInterceptor {
     }
   }
 
-  /* 获取数据权限 */
+  /* Có được quyền dữ liệu */
   async setDataScope(request, aliaObj: DeptOrUserAlias) {
     const { userId } = request.user;
     let sqlString = '';
-    /* 如果是超级管理员 ，就具备所有权限 */
+    /* Nếu đó là một quản trị viên siêu , Chỉ có quyền sở hữu */
     const roleArr: Role[] = JSON.parse(
       await this.redis.get(`${USER_ROLEKS_KEY}:${userId}`),
     );
@@ -56,20 +56,20 @@ export class DataScopeInterceptor implements NestInterceptor {
         const role = roleArr[index];
         const dataScope = role.dataScope;
         if (dataScope == '1') {
-          //全部数据权限
+          //Tất cả các quyền dữ liệu
           sqlString = '';
           return;
         } else if (dataScope == '2') {
-          //自定义数据权限
+          //Quyền dữ liệu tùy chỉnh
           sqlString += ` OR ${aliaObj.deptAlias}.dept_id IN ( SELECT deptDeptId FROM role_depts_dept WHERE roleRoleId = ${role.roleId} )`;
         } else if (dataScope == '3') {
-          //本部门数据权限
+          //Quyền dữ liệu của trụ sở
           sqlString += ` OR ${aliaObj.deptAlias}.dept_id = ${deptId}`;
         } else if (dataScope == '4') {
-          //本部门及以下数据权限
+          //Quyền dữ liệu của bộ phận này và bên dưới
           sqlString += ` OR ${aliaObj.deptAlias}.dept_id IN ( SELECT dept_id FROM dept WHERE concat('.',mpath) like '%.${deptId}.%')`;
         } else if (dataScope == '5') {
-          //仅本人数据权限
+          //Chỉ các quyền dữ liệu
           sqlString += ` OR ${aliaObj.userAlias}.user_id = ${userId}`;
         }
       }

@@ -3,7 +3,7 @@
  * @Date: 2022-01-29 11:12:00
  * @LastEditTime: 2022-09-18 11:07:12
  * @LastEditors: Please set LastEditors
- * @Description: 是否演示环境守卫
+ * @Description: Có thể hiện bảo vệ môi trường
  * @FilePath: /meimei-admin/src/common/guards/demo-environment.guard.ts
  * You can you up，no can no bb！！
  */
@@ -23,12 +23,14 @@ export class DemoEnvironmentGuard implements CanActivate {
       this.configService.get<boolean>('isDemoEnvironment');
     if (!isDemoEnvironment) return true;
     const request: Request = context.switchToHttp().getRequest();
-    const allowUrlArr = ['/login', '/logout']; //放过的路由
+    const allowUrlArr = ['/login', '/logout']; //Đi thôi
     if (
       request.method.toLocaleLowerCase() != 'get' &&
       !allowUrlArr.includes(request.url)
     )
-      throw new ApiException('演示环境,不允许操作');
+      throw new ApiException(
+        'Môi trường trình diễn, không được phép hoạt động',
+      );
     return true;
   }
 }

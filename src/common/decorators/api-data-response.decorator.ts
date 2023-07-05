@@ -3,7 +3,7 @@
  * @Date: 2021-12-13 09:48:49
  * @LastEditTime: 2022-09-18 11:07:52
  * @LastEditors: Please set LastEditors
- * @Description: 返回值放入data属性中的openApi 装饰器
+ * @Description: Đặt giá trị trả về trong thuộc tính dữ liệu openApi Người trang trí
  * @FilePath: /meimei-admin/src/common/decorators/api-data-response.decorator.ts
  * You can you up，no can no bb！！
  */
@@ -48,14 +48,18 @@ export const ApiDataResponse = <TModel extends Type<any>>(
       };
       break;
     case typeEnum.object:
-      if (!model) throw Error('返回值为typeEnum.object时请填写类型！');
+      if (!model)
+        throw Error('Giá trị trả lại typeEnum.object Vui lòng điền vào loại!');
       applyDecoratorArr.push(ApiExtraModels(model));
       data = {
         $ref: getSchemaPath(model),
       };
       break;
     case typeEnum.objectArr:
-      if (!model) throw Error('返回值为typeEnum.objectArr时请填写类型！');
+      if (!model)
+        throw Error(
+          'Giá trị trả lại typeEnum.objectArr Vui lòng điền vào loại!',
+        );
       applyDecoratorArr.push(ApiExtraModels(model));
       data = {
         type: 'array',

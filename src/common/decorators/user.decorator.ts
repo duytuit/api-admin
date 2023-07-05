@@ -12,7 +12,7 @@ export enum UserEnum {
   'deptName' = 'deptName',
 }
 
-// 设置在参数中 获取 哪些用户信息
+//Đặt thông tin người dùng trong tham số để nhận
 export const User = createParamDecorator(
   (data: UserEnum, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();

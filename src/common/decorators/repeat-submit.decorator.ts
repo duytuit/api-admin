@@ -3,7 +3,7 @@
  * @Date: 2022-01-19 12:49:14
  * @LastEditTime: 2022-09-18 11:08:02
  * @LastEditors: Please set LastEditors
- * @Description: 防止重复提交装饰器
+ * @Description: Ngăn chặn liên tục gửi thiết bị trang trí
  * @FilePath: /meimei-admin/src/common/decorators/repeat-submit.decorator.ts
  * You can you up，no can no bb！！
  */
@@ -12,8 +12,8 @@ import { SetMetadata } from '@nestjs/common';
 import { REOEATSUBMIT_METADATA } from '../contants/decorator.contant';
 
 export class RepeatSubmitOption {
-  interval?: number = 5; //默认5s
-  message?: string = '请求过于频繁';
+  interval?: number = 5; //Mặc định 5s
+  message?: string = 'Yêu cầu quá thường xuyên';
 }
 
 export const RepeatSubmit = (option?: RepeatSubmitOption) => {

@@ -30,7 +30,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     LogDebug._info(exception.stack);
   }
 
-  /* 解析错误类型，获取Trạng thái码和返回值 */
+  /*Phân tích loại lỗi, nhận Trạng thái Mã và giá trị trả về */
   errorResult(exception: unknown) {
     const status =
       exception instanceof HttpException

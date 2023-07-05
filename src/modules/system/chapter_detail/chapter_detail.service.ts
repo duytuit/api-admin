@@ -41,7 +41,7 @@ export class ChapterDetailService {
         req.originalUrl,
         JSON.stringify(rs_list),
         'EX',
-        60 * 30,
+        process.env.TIME_EXPIRE_REDIS || 60,
       );
       return rs_list;
     }

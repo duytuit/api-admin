@@ -3,7 +3,7 @@
  * @Date: 2021-12-09 11:09:19
  * @LastEditTime: 2022-09-18 11:07:53
  * @LastEditors: Please set LastEditors
- * @Description: 分页请求返回的 openApi 装饰器
+ * @Description: Yêu cầu Fagling trở lại openApi Người trang trí
  * @FilePath: /meimei-admin/src/common/decorators/api-paginated-response.decorator.ts
  * You can you up，no can no bb！！
  */

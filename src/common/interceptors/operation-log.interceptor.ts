@@ -3,7 +3,7 @@
  * @Date: 2021-12-08 19:47:38
  * @LastEditTime: 2022-09-18 11:07:04
  * @LastEditors: Please set LastEditors
- * @Description: 操作日志记录拦截器
+ * @Description: Hồ sơ ghi nhật ký hoạt động đánh chặn
  * @FilePath: /meimei-admin/src/common/interceptors/operation-log.interceptor.ts
  * You can you up，no can no bb！！
  */
@@ -55,7 +55,7 @@ export class OperationLogInterceptor implements NestInterceptor {
     );
   }
 
-  /* 记录操作日志 */
+  /* Ghi lại nhật ký hoạt động */
   async log(context: ExecutionContext, data: AjaxResult) {
     const logOption = this.reflector.get<LogOption>(
       LOG_KEY_METADATA,
@@ -67,31 +67,31 @@ export class OperationLogInterceptor implements NestInterceptor {
     const className = context.getClass().name;
     const handlerName = context.getHandler().name;
     const operLog = new OperLog();
-    /* 模块标题 */
+    /* Tiêu đề Mô-đun */
     operLog.title = logOption.title;
-    /* 业务类型 */
+    /* Loại hình kinh doanh */
     operLog.businessType = logOption.businessType;
-    /* 请求方式 */
+    /* Cách yêu cầu */
     operLog.requestMethod = method;
-    /* 方法名称 */
+    /* Tên phương thức */
     operLog.method = `${className}.${handlerName}()`;
     if (request.user) {
-      /* 操作人员 */
+      /* nhà điều hành */
       const userId = request.user.userId;
       const userName = await this.redis.get(`${USER_USERNAME_KEY}:${userId}`);
       operLog.operName = userName;
       /* Tên bộ phận */
       const deptName = await this.redis.get(`${USER_DEPTNAME_KEY}:${userId}`);
       operLog.deptName = deptName;
-      /* 请求url */
+      /* hỏi url */
       operLog.operUrl = request.url;
-      /* 请求ip */
+      /* hỏi ip */
       operLog.operIp = this.sharedService.getReqIP(request);
-      /* 请求地址 */
+      /* Địa chỉ yêu cầu */
       operLog.operLocation = await this.sharedService.getLocation(
         operLog.operIp,
       );
-      /* 请求参数 */
+      /* Yêu cầu tham số */
       if (logOption.isSaveRequestData) {
         const data = {
           params: request.params,
@@ -100,20 +100,20 @@ export class OperationLogInterceptor implements NestInterceptor {
         };
         operLog.operParam = JSON.stringify(data);
       }
-      /* 成功的请求 */
+      /* Yêu cầu thành công */
       if ((data && data.code === 200) || data instanceof StreamableFile) {
-        //如果是流，都算成功
+        //Nếu nó là luồng, nó sẽ thành công
         operLog.status = 0;
       } else {
-        //失败的请求
+        //Yêu cầu thất bại
         operLog.status = 1;
         operLog.errorMsg = data && data.msg;
       }
-      /* 记录返回值 */
+      /* Ghi lại giá trị trả về */
       if (logOption.isSaveResponseData) {
         operLog.jsonResult = JSON.stringify(data);
       }
-      // 请求时间
+      // Thời gian yêu cầu
       operLog.operTime = moment().format('YYYY-MM-DDTHH:mm:ss');
       return this.logService.addOperLog(operLog);
     }

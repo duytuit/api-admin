@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 import { BaseEntity } from 'src/common/entities/base.entity';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -25,8 +25,10 @@ export class Project extends BaseEntity {
   @Column({
     name: 'status',
     comment: 'Thông báo trang thái (0 bình thường 1 đóng) ',
+    default: 0,
+    type: 'tinyint',
   })
-  @Type()
+  @IsOptional()
   @IsNumber()
   status: number;
 }

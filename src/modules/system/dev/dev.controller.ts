@@ -59,7 +59,10 @@ export class DevController {
   create(@Body() createDevDto: CreateDevDto) {
     return this.devService.create(createDevDto);
   }
-
+  @Get('list/test')
+  async findAllOp() {
+    return 'abc';
+  }
   @Get('list')
   async findAll() {
     // const rs_pro_detail = await this.productDetailsService.findByName(

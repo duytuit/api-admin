@@ -21,6 +21,28 @@ export class Category extends BaseEntity {
   @IsString()
   name: string;
 
+  /* Slug */
+  @Column({
+    name: 'slug',
+    comment: 'slug danh mục',
+    length: 500,
+    default: null,
+  })
+  @IsString()
+  @IsOptional()
+  slug: string;
+
+  /* Mô tả */
+  @Column({
+    name: 'desc',
+    comment: 'mô tả',
+    length: 500,
+    default: null,
+  })
+  @IsString()
+  @IsOptional()
+  desc: string;
+
   /* Link */
   @Column({
     name: 'link_external',
@@ -29,6 +51,7 @@ export class Category extends BaseEntity {
     default: null,
   })
   @IsString()
+  @IsOptional()
   @Type()
   linkExternal: string;
 
@@ -60,6 +83,17 @@ export class Category extends BaseEntity {
   @IsNumber()
   @IsOptional()
   projectId: number | null;
+
+  /* Danh mục cha Id */
+  @Column({
+    name: 'parent_id',
+    comment: 'Danh mục cha',
+    default: 0,
+    type: 'integer',
+  })
+  @IsNumber()
+  @IsOptional()
+  parentId: number;
 
   @Column({
     name: 'status',

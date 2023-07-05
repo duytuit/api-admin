@@ -1,3 +1,5 @@
+import { customAlphabet } from 'nanoid';
+
 export class Helper {
   static convertToSlug(Text) {
     return Text.toLowerCase()
@@ -20,6 +22,19 @@ export class Helper {
       counter += 1;
     }
     return result;
+  }
+  /**
+   * @description: Tạo số ngẫu nhiên
+   * @param {number} length
+   * @param {*} placeholder
+   * @return {*}
+   */
+  static generateRandomCustom(
+    length: number,
+    placeholder = '1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM',
+  ): string {
+    const customNanoid = customAlphabet(placeholder, length);
+    return customNanoid();
   }
   static getTimeNow(name_log?: string) {
     const today = new Date();

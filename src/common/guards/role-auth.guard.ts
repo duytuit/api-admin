@@ -3,7 +3,7 @@
  * @Date: 2021-12-22 13:22:00
  * @LastEditTime: 2022-09-18 11:07:20
  * @LastEditors: Please set LastEditors
- * @Description: 权限守卫
+ * @Description: Bảo vệ chính quyền
  * @FilePath: /meimei-admin/src/common/guards/role-auth.guard.ts
  * You can you up，no can no bb！！
  */
@@ -45,7 +45,10 @@ export class RoleAuthGuard implements CanActivate {
         return userRoleArr.includes(userPermission);
       });
     }
-    if (!result) throw new ApiException('暂无权限访问，请联系管理员');
+    if (!result)
+      throw new ApiException(
+        'Không có quyền ghé thăm, vui lòng liên hệ với quản trị viên',
+      );
     return result;
   }
 }

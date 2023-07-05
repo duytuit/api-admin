@@ -20,6 +20,7 @@ import { ApiPaginatedResponse } from 'src/common/decorators/api-paginated-respon
 import { PaginationPipe } from 'src/common/pipes/pagination.pipe';
 import { InjectRedis, Redis } from '@nestjs-modules/ioredis';
 import { DataObj } from 'src/common/class/data-obj.class';
+import { COUNTRIES } from 'src/common/utils/country';
 
 @Controller('system/categories')
 @Public()
@@ -56,5 +57,18 @@ export class CategoriesController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.categoriesService.remove(+id);
+  }
+
+  @Get('update/country')
+  async findCountry() {
+    for (const item of COUNTRIES) {
+      const cat = new Category();
+      cat.name = item.title;
+      cat.slug = item.value;
+      cat.projectId = 2;
+      cat.type = 1;
+      const sdfdsf = await this.categoriesService.addOrUpdate(cat);
+    }
+    return DataObj.create({ abc: '123' });
   }
 }

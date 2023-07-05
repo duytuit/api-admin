@@ -20,7 +20,7 @@ export class ExcelService {
     const data = await this.formatExport(exportObjArr, list);
     const arrBuffer = xlsx.build([
       {
-        name: '表格1',
+        name: 'tờ giấy 1',
         data,
         options: {},
       },
@@ -36,11 +36,11 @@ export class ExcelService {
     try {
       const workSheetsFromBuffer = xlsx.parse(fs.readFileSync(file.path));
       const data = workSheetsFromBuffer[0].data;
-      if (data.length < 2) throw Error('格式错误');
+      if (data.length < 2) throw Error('sai định dạng');
       const importObjArr = Reflect.getMetadata(EXCEL_ARR_KRY, model) ?? [];
       const excelData = await this.formatImport(importObjArr);
       if (data[0].toString() !== excelData[0].toString())
-        throw Error('格式错误');
+        throw Error('sai định dạng');
       const objPropertyArr = data[0] as string[];
       const dataArr = data.slice(2);
       const result = [];
@@ -53,17 +53,17 @@ export class ExcelService {
       }
       return result;
     } catch (error) {
-      throw new ApiException('文件格式错误');
+      throw new ApiException('Lỗi định dạng tệp');
     }
   }
 
-  /* Xuất Excel模板 */
+  /* Xuất Excel bản mẫu */
   async importTemplate<TModel extends Type<any>>(model: TModel) {
     const importObjArr = Reflect.getMetadata(EXCEL_ARR_KRY, model) ?? [];
     const data = await this.formatImport(importObjArr);
     const arrBuffer = xlsx.build([
       {
-        name: '表格1',
+        name: 'tờ giấy 1',
         data,
         options: {},
       },
@@ -71,7 +71,7 @@ export class ExcelService {
     return Buffer.from(arrBuffer);
   }
 
-  /* 整理Xuất Excel数据 */
+  /* ngăn nắp Xuất Excel dữ liệu */
   private async formatExport(exportObjArr: ExcelOptionAll[], list: any[]) {
     const optionPromiseArr = exportObjArr
       .filter(

@@ -3,7 +3,7 @@
  * @Date: 2022-01-29 11:06:07
  * @LastEditTime: 2022-09-18 11:07:19
  * @LastEditors: Please set LastEditors
- * @Description: 防止重复提交守卫
+ * @Description: Ngăn chặn nhiều lần gửi bảo vệ
  * @FilePath: /meimei-admin/src/common/guards/repeat-submit.guard.ts
  * You can you up，no can no bb！！
  */
@@ -40,7 +40,7 @@ export class RepeatSubmitGuard implements CanActivate {
     };
     const dataString = JSON.stringify(data);
     if (!cache) {
-      //没有缓存数据
+      //Không có dữ liệu bộ đệm
       if (dataString) {
         await this.redis.set(
           request.url,

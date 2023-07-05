@@ -3,7 +3,7 @@
  * @Date: 2021-12-22 12:55:33
  * @LastEditTime: 2022-09-18 11:08:03
  * @LastEditors: Please set LastEditors
- * @Description: 操作权限装饰器
+ * @Description: Công cụ trang trí quyền hoạt động
  * @FilePath: /meimei-admin/src/common/decorators/requires-permissions.decorator.ts
  * You can you up，no can no bb！！
  */

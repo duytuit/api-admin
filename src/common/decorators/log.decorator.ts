@@ -3,7 +3,7 @@
  * @Date: 2021-12-22 16:54:36
  * @LastEditTime: 2022-09-18 11:08:00
  * @LastEditors: Please set LastEditors
- * @Description: 日志记录装饰器
+ * @Description: Ghi nhật ký thiết bị trang trí
  * @FilePath: /meimei-admin/src/common/decorators/log.decorator.ts
  * You can you up，no can no bb！！
  */
@@ -14,19 +14,19 @@ import { LOG_KEY_METADATA } from '../contants/decorator.contant';
 https://docs.nestjs.com/openapi/decorators#decorators
 */
 export enum BusinessTypeEnum {
-  /* 其他 */
+  /* khác */
   other = '1',
 
-  /* 插入 */
+  /* chèn */
   insert = '2',
 
-  /* 更新 */
+  /* thay mới */
   update = '3',
 
   /* Xoá */
   delete = '4',
 
-  /* 授权 */
+  /* Ủy quyền */
   grant = '5',
 
   /* Xuất Excel */
@@ -35,24 +35,24 @@ export enum BusinessTypeEnum {
   /* Nhập Excel */
   import = '7',
 
-  /* 强退 */
+  /* Lực lượng */
   force = '8',
 
-  /* 清除 */
+  /* Di dời */
   clean = '9',
 }
 
 export class LogOption {
-  /* 操作模块 */
+  /* Mô -đun hoạt động */
   title: string;
 
-  /* 操作功能 */
+  /* Chức năng hoạt động */
   businessType?: BusinessTypeEnum = BusinessTypeEnum.other;
 
-  /* 是否保存请求的参数 */
+  /* Có lưu tham số yêu cầu không */
   isSaveRequestData?: boolean = true;
 
-  /* 是否保存响应的参数 */
+  /* Có lưu tham số phản hồi không */
   isSaveResponseData?: boolean = true;
 }
 

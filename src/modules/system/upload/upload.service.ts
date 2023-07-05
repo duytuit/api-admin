@@ -56,11 +56,11 @@ export class UploadService {
     if (path_file) {
       const url = folder
         ? gettime
-          ? `http://45.119.87.103:8090/common/upload/buffer?folder=${folder}&gettime=${gettime}`
-          : `http://45.119.87.103:8090/common/upload/buffer?folder=${folder}`
+          ? `http://45.119.87.103:8090/common/upload/path?fileUrl=${path_file}&folder=${folder}&gettime=${gettime}`
+          : `http://45.119.87.103:8090/common/upload/path?fileUrl=${path_file}&folder=${folder}`
         : gettime
-        ? `http://45.119.87.103:8090/common/upload/buffer?gettime=${gettime}`
-        : `http://45.119.87.103:8090/common/upload/buffer`;
+        ? `http://45.119.87.103:8090/common/upload/path?fileUrl=${path_file}&gettime=${gettime}`
+        : `http://45.119.87.103:8090/common/upload/path?fileUrl=${path_file}`;
       const result: any = await axios.get(url);
 
       if ((result.code = 200)) {
