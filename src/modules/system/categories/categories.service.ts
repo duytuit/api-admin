@@ -33,7 +33,6 @@ export class CategoriesService {
         where.projectId = reqCategoryList.projectId;
       }
       const result = await this.categoryRepository.findAndCount({
-        select: ['name', 'createBy', 'createTime', 'status'],
         where,
         skip: reqCategoryList.skip,
         take: reqCategoryList.take,
