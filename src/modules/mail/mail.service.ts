@@ -8,8 +8,8 @@ export const mailgunConfig = {
   smtpServer: 'smtp.mailgun.org',
   smtpPort: 587,
   smtpUsername:
-    'postmaster@sandbox11a6332191b74f188ba25fb16b0a1586.mailgun.org',
-  smtpPassword: 'a7df6fae84159d06cd56c2dee71c2613-181449aa-428ad8b4',
+    'postmaster@sandboxf801c965198e4248b994c72feb817208.mailgun.org',
+  smtpPassword: '71806dc344e471ad3f7ba2918935b7c5-6d8d428c-8f5c5e33',
 };
 @Injectable()
 export class MailService {
@@ -24,10 +24,10 @@ export class MailService {
         pass: mailgunConfig.smtpPassword,
       },
     });
-    this.mailgunClient = mailgun({
-      apiKey: mailgunConfig.apiKey,
-      domain: mailgunConfig.domain,
-    });
+    // this.mailgunClient = mailgun({
+    //   apiKey: mailgunConfig.apiKey,
+    //   domain: mailgunConfig.domain,
+    // });
   }
 
   async sendEmail(to: string, subject: string, text: string): Promise<void> {
