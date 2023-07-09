@@ -28,8 +28,8 @@ export class UploadService {
         fdata.append('files', item.buffer, item.originalname);
       });
       const url = folder
-        ? `http://45.119.87.103:8090/common/uploads?folder=${folder}`
-        : 'http://45.119.87.103:8090/common/uploads';
+        ? `${process.env.UPLOAD_CDN}common/uploads?folder=${folder}`
+        : `${process.env.UPLOAD_CDN}common/uploads`;
       const result: any = await axios.post(url, fdata, {
         headers: {
           'Content-Type': `multipart/form-data; boundary=${fdata.getBoundary()}`,
@@ -56,11 +56,11 @@ export class UploadService {
     if (path_file) {
       const url = folder
         ? gettime
-          ? `http://45.119.87.103:8090/common/upload/path?fileUrl=${path_file}&folder=${folder}&gettime=${gettime}`
-          : `http://45.119.87.103:8090/common/upload/path?fileUrl=${path_file}&folder=${folder}`
+          ? `${process.env.UPLOAD_CDN}common/upload/path?fileUrl=${path_file}&folder=${folder}&gettime=${gettime}`
+          : `${process.env.UPLOAD_CDN}common/upload/path?fileUrl=${path_file}&folder=${folder}`
         : gettime
-        ? `http://45.119.87.103:8090/common/upload/path?fileUrl=${path_file}&gettime=${gettime}`
-        : `http://45.119.87.103:8090/common/upload/path?fileUrl=${path_file}`;
+        ? `${process.env.UPLOAD_CDN}common/upload/path?fileUrl=${path_file}&gettime=${gettime}`
+        : `${process.env.UPLOAD_CDN}common/upload/path?fileUrl=${path_file}`;
       const result: any = await axios.get(url);
 
       if ((result.code = 200)) {
@@ -88,8 +88,8 @@ export class UploadService {
       gettime: gettime,
     };
     const url = folder
-      ? `http://45.119.87.103:8090/common/upload/buffer?folder=${folder}`
-      : `http://45.119.87.103:8090/common/upload/buffer`;
+      ? `${process.env.UPLOAD_CDN}common/upload/buffer?folder=${folder}`
+      : `${process.env.UPLOAD_CDN}common/upload/buffer`;
     console.log(url);
     const result: any = await axios.post(url, fdata, {
       headers: {

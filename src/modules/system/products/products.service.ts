@@ -65,8 +65,8 @@ export class ProductsService {
     return await this.productRepository.findBy(where);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async findOne(id: number) {
+    return await this.productRepository.findOneBy({ id });
   }
 
   remove(id: number) {

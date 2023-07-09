@@ -70,7 +70,6 @@ export class Customer extends BaseEntity {
     default: null,
     type: 'tinyint',
   })
-  @Type()
   @IsOptional()
   nationalId: number;
 
@@ -81,7 +80,6 @@ export class Customer extends BaseEntity {
     default: null,
     type: 'tinyint',
   })
-  @Type()
   @IsOptional()
   countryId: number;
 
@@ -92,9 +90,17 @@ export class Customer extends BaseEntity {
     default: null,
     length: 100,
   })
-  @Type()
   @IsOptional()
   passportNo: string;
+
+  /* identity_card image */
+  @Column({
+    name: 'identity_card_image',
+    comment: 'Ảnh Chứng minh',
+    default: null,
+  })
+  @IsOptional()
+  identityCardImage: string;
 
   /* profession */
   @Column({
@@ -103,7 +109,6 @@ export class Customer extends BaseEntity {
     default: null,
     length: 100,
   })
-  @Type()
   @IsOptional()
   @IsString()
   profession: string;
@@ -129,6 +134,7 @@ export class Customer extends BaseEntity {
   @IsString()
   @IsOptional()
   passportImage: string;
+
   /* National ID */
   @Column({
     name: 'identity_card',
@@ -139,6 +145,26 @@ export class Customer extends BaseEntity {
   @IsString()
   @IsOptional()
   identityCard: string;
+
+  /* Type */
+  @Column({
+    name: 'type',
+    comment: 'mục đích tạo khách hàng',
+    default: 0,
+  })
+  @IsNumber()
+  type: number;
+
+  /* Desc detail */
+  @Column({
+    name: 'desc_detail',
+    comment: 'nội dung mô tả mục đích tạo khách hàng',
+    default: null,
+    type: 'longtext',
+  })
+  @IsString()
+  @IsOptional()
+  descDetail: string;
 
   /* Project Id */
   @Column({

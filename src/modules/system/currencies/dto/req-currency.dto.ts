@@ -10,4 +10,8 @@ export class ReqCurrencyList extends PaginationDto {
   @IsOptional()
   @IsString()
   name: string;
+
+  @IsOptional()
+  @IsString()
+  remark: string;
 }

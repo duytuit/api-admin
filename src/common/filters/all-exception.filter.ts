@@ -51,7 +51,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     }
     return {
       status,
-      result: AjaxResult.error(message, code),
+      result: AjaxResult.error(message, code, { data: null }),
     };
   }
 }

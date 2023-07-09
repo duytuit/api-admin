@@ -16,10 +16,11 @@ export class AjaxResult {
   constructor(code, msg, data) {
     this.code = code;
     this.msg = msg;
-    if (Array.isArray(data)) {
+    if (Array.isArray(data) || data == null) {
       this.data = data;
     } else {
       Object.assign(this, data);
+      this.data = data;
     }
   }
 
@@ -27,7 +28,7 @@ export class AjaxResult {
     return new AjaxResult(200, msg, data);
   }
 
-  static error(msg = 'lỗi hệ thống', code = 500) {
-    return new AjaxResult(code, msg, null);
+  static error(msg = 'lỗi hệ thống', code = 500, data) {
+    return new AjaxResult(code, msg, data);
   }
 }

@@ -45,8 +45,7 @@ export class CategoriesController {
     @Req() req,
     @Query(PaginationPipe) reqCategoryList: ReqCategoryList,
   ) {
-    const rs_list = await this.categoriesService.list(req, reqCategoryList);
-    return DataObj.create(rs_list);
+    return await this.categoriesService.list(req, reqCategoryList);
   }
 
   @Get(':id')

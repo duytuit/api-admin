@@ -1,4 +1,7 @@
 import { customAlphabet } from 'nanoid';
+import * as CryptoJS from 'crypto-js';
+import * as FormData from 'form-data';
+import * as crypto from 'crypto';
 
 export class Helper {
   static convertToSlug(Text) {
@@ -53,5 +56,31 @@ export class Helper {
       ':' +
       today.getMilliseconds();
     console.log(name_log, all_time);
+  }
+  static convertObjToParam(body) {
+    return Object.keys(body)
+      .map(function (key) {
+        return key + '=' + body[key];
+      })
+      .join('&');
+  }
+  static makeSignature(data, hash_key) {
+    const hash_data = Helper.convertObjToParam(data);
+    console.log(hash_data);
+
+    return crypto
+      .createHmac('sha256', hash_key)
+      .update(hash_data)
+      .digest('hex'); // Secret Passphrase
+  }
+  static createFormData(body) {
+    const data = new FormData();
+    Object.keys(body).forEach((key) => {
+      if (typeof body[key] === 'object')
+        data.append(key, JSON.stringify(body[key]));
+      else if (body[key] || body[key] === 0 || body[key] === '')
+        data.append(key, body[key]);
+    });
+    return data;
   }
 }

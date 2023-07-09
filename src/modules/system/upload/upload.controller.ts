@@ -30,8 +30,7 @@ export class UploadController {
     @Body('path_file') path_file: string,
     @UploadedFiles() files?: Array<Express.Multer.File>,
   ) {
-    const upload = await this.uploadService.add(files, path_file);
-    return AjaxResult.success(upload);
+    return await this.uploadService.add(files, path_file);
   }
 
   @Get()

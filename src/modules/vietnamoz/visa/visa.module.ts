@@ -18,6 +18,7 @@ import { ServiceModule } from 'src/modules/system/service/service.module';
 import { UploadModule } from 'src/modules/system/upload/upload.module';
 import { PaymentDetailModule } from 'src/modules/system/payment_detail/payment_detail.module';
 import { CurrenciesModule } from 'src/modules/system/currencies/currencies.module';
+import { MailService } from 'src/modules/mail/mail.service';
 
 @Module({
   imports: [
@@ -40,7 +41,7 @@ import { CurrenciesModule } from 'src/modules/system/currencies/currencies.modul
     CurrenciesModule,
   ],
   controllers: [VisaController],
-  providers: [VisaService],
+  providers: [VisaService, MailService],
   exports: [VisaService],
 })
 export class VisaModule {}

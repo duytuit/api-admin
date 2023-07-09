@@ -29,9 +29,9 @@ export class CurrenciesService {
     const rs_list = await this.redis.get('currency' + req.originalUrl);
     if (!rs_list) {
       const where: FindOptionsWhere<Currency> = {};
-      // if (reqCurrencyList.name) {
-      //   where.name = Like(`%${reqCurrencyList.name}%`);
-      // }
+      if (reqCurrencyList.remark) {
+        where.remark = reqCurrencyList.remark;
+      }
       const result = await this.CurrencyRepository.findAndCount({
         where,
         skip: reqCurrencyList.skip,
