@@ -1,9 +1,5 @@
 export const COUNTRIES = [
   {
-    title: 'Afghanistan',
-    value: 'AF',
-  },
-  {
     title: 'Albania',
     value: 'AL',
   },
