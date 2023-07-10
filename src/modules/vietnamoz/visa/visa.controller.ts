@@ -91,7 +91,7 @@ export class VisaController {
       currency: 'VND',
       orderDescription: 'E Visa',
       totalItem: 1,
-      checkoutType: 1,
+      checkoutType: 4,
       installment: false,
       cancelUrl: 'http://127.0.0.1:8000/transaction/result',
       returnUrl: 'http://127.0.0.1:8000/transaction/result',
@@ -105,7 +105,8 @@ export class VisaController {
       language: 'vi',
       allowDomestic: true,
     };
-    return await this.sendEmail();
+    return await this.sendOrder(alepay);
+    // return await this.sendEmail();
     // console.log(abc);
     // return {
     //   abc: 'dsfdsfds',
@@ -184,15 +185,14 @@ export class VisaController {
     //     "checksumKey" => "HzxR9TCpMseGm1GUSNq873XGi156cP", //Là key dùng để tạo checksum data.
     //     "callbackUrl" => '/transaction/result',
     // ]
-    const checksumKey = 's7UlvRCqTieXyA9UXoo2R9IJQ4W62p';
-    data.tokenKey = 'mz7yS4yVognq5UsUlbJq8vWXc9KwEB';
+    const checksumKey = 'HzxR9TCpMseGm1GUSNq873XGi156cP';
+    data.tokenKey = 'La4vzOQVGlVZUL2jp46ETpDDsHNeE9';
     data.returnUrl = 'http://127.0.0.1:8000/transaction/result';
     const signature = Helper.makeSignature(data, checksumKey);
     console.log(signature);
-
     data.signature = signature;
     const dsfdsf = await axios.post(
-      'https://alepay-v3.nganluong.vn/api/v3/checkout/request-payment',
+      'https://alepay-v3-sandbox.nganluong.vn/api/v3/checkout/request-payment',
       data,
     );
     console.log(dsfdsf.data);

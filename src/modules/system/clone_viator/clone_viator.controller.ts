@@ -45,6 +45,8 @@ export class CloneViatorController {
       args: ['--no-sandbox'],
     });
     const page = await browser.newPage();
+    // await page.setJavaScriptEnabled(true);
+    // await page.setDefaultNavigationTimeout(0);
     const array_item = [];
     for (let index = 1; index < 5; index++) {
       const new_url =
@@ -56,43 +58,86 @@ export class CloneViatorController {
         waitUntil: 'domcontentloaded',
         timeout: 30000,
       });
-      const imgUrl = await page.evaluate(() => {
-        return document
-          .querySelector('.imageContainer__13XR > img')
-          .getAttribute('src');
-      });
-      console.log('imgUrl', imgUrl);
-
-      const list_data: any = await page.$$eval(
+      // await page.setViewport({
+      //   width: 1200,
+      //   height: 800,
+      // });
+      //await this.autoScroll(page);
+      // scroll down end of page
+      // await page.evaluate(() => {
+      //   window.scrollTo(0, 60000);
+      // });
+      // extract the titles from web page
+      //   const titles = await page.evaluate(() => {
+      //     const links = Array.from(document.querySelectorAll('h3.spot__heading'));
+      //     return links.map(a => ({
+      //         title: a.innerText,
+      //     }));
+      // });
+      // const imgUrl = await page.evaluate(() => {
+      //   return document
+      //     .querySelector('.imageContainer__13XR > img')
+      //     .getAttribute('src');
+      // });
+      // console.log('imgUrl', imgUrl);
+      // const getThemAll = await page.$$('.imageContainer__13XR > .image__zGpq');
+      // getThemAll.forEach((element: any) => {
+      //   console.log(element.getAttribute('src'));
+      // });
+      const element = await page.waitForSelector('.productsListProducts__2m5A'); // select the element
+      const lis = await page.$$(
         '.productsListProducts__2m5A > .productListCardWithDebug__3lZY',
-        (links) => {
-          // Make sure the book to be scraped is in stock
-          // Extract the links from the data
-
-          return links.map((el) => ({
-            title: el.querySelector<HTMLElement>('h2.title__1Wwg').innerText,
-            link: el.querySelector<HTMLLinkElement>(
-              'a.productListCardWrapper__PO7V',
-            ).href,
-            img:
-              el
-                .querySelector<HTMLImageElement>('.imageContainer__13XR > img')
-                ?.getAttribute('src') || '',
-            alt_imge:
-              el
-                .querySelector<HTMLImageElement>('.imageContainer__13XR > img')
-                .getAttribute('alt') || '',
-            desc_short: el
-              .querySelector<HTMLDivElement>('.description__2Knx > div')
-              .innerText.trim(),
-          }));
-        },
       );
-      console.log(list_data);
+      for (const content of lis) {
+        await page.waitForTimeout(1000);
+        const name = await content.$('.imageContainer__13XR > img');
+        name.scrollIntoView();
+        const gameName = await page.evaluate(
+          (el) => el.getAttribute('src'),
+          name,
+        );
+        console.log('Game Name: ', gameName);
+      }
+      // const value = await element.evaluate((el) => el.getAttribute('src'));
+      // console.log(value);
+
+      // await page.evaluate(() => {
+      //   const elements = document.getElementsByClassName('image__zGpq');
+      //   for (const element of elements) {
+      //     const _element: any = element;
+      //     console.log(_element);
+      //   }
+      // });
+      // const list_data: any = await page.$$eval(
+      //   '.productsListProducts__2m5A > .productListCardWithDebug__3lZY',
+      //   (links) => {
+      //     // Make sure the book to be scraped is in stock
+      //     // Extract the links from the data
+      //     // this.delays(2000);
+      //     return links.map((el) => ({
+      //       title: el.querySelector<HTMLElement>('h2.title__1Wwg').innerText,
+      //       link: el.querySelector<HTMLLinkElement>(
+      //         'a.productListCardWrapper__PO7V',
+      //       ).href,
+      //       img:
+      //         el
+      //           .querySelector<HTMLImageElement>('.imageContainer__13XR > img')
+      //           ?.getAttribute('src') || '',
+      //       alt_imge:
+      //         el
+      //           .querySelector<HTMLImageElement>('.imageContainer__13XR > img')
+      //           .getAttribute('alt') || '',
+      //       desc_short: el
+      //         .querySelector<HTMLDivElement>('.description__2Knx > div')
+      //         .innerText.trim(),
+      //     }));
+      //   },
+      // );
+      // console.log(list_data);
 
       // array_item.push(...list_data);
     }
-    console.log(array_item);
+    // console.log(array_item);
     // if (array_item.length > 0) {
     //   for (let index = 0; index < array_item.length; index++) {
     //     const element = array_item[index];
@@ -156,5 +201,25 @@ export class CloneViatorController {
     );
 
     await page.mouse.wheel({ deltaX: 2500 });
+  }
+  async autoScroll(page) {
+    await page.evaluate(async () => {
+      await new Promise((resolve) => {
+        let totalHeight = 0;
+        const distance = 100;
+        const timer = setInterval(() => {
+          const scrollHeight = 2000;
+          window.scrollBy(0, distance);
+          totalHeight += distance;
+
+          if (totalHeight >= scrollHeight - window.innerHeight) {
+            clearInterval(timer);
+          }
+        }, 100);
+      });
+    });
+  }
+  delays(milliseconds) {
+    return new Promise((resolve) => setTimeout(resolve, milliseconds));
   }
 }

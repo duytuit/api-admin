@@ -59,6 +59,7 @@ export class Helper {
   }
   static convertObjToParam(body) {
     return Object.keys(body)
+      .sort()
       .map(function (key) {
         return key + '=' + body[key];
       })
@@ -67,7 +68,6 @@ export class Helper {
   static makeSignature(data, hash_key) {
     const hash_data = Helper.convertObjToParam(data);
     console.log(hash_data);
-
     return crypto
       .createHmac('sha256', hash_key)
       .update(hash_data)
