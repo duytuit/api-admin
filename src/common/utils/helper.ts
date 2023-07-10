@@ -57,6 +57,26 @@ export class Helper {
       today.getMilliseconds();
     console.log(name_log, all_time);
   }
+  static getTime() {
+    const today = new Date();
+    const all_time =
+      today.getFullYear().toString() +
+      (today.getMonth() + 1).toString() +
+      today.getDate().toString() +
+      '_' +
+      today.getHours().toString() +
+      today.getMinutes().toString() +
+      today.getSeconds().toString() +
+      today.getMilliseconds().toString();
+    return all_time;
+  }
+  static getCycleName() {
+    const today = new Date();
+    const all_time =
+      today.getFullYear().toString() +
+      (today.getMonth() + 1).toString().padStart(2, '0');
+    return all_time;
+  }
   static convertObjToParam(body) {
     return Object.keys(body)
       .sort()
@@ -82,5 +102,17 @@ export class Helper {
         data.append(key, body[key]);
     });
     return data;
+  }
+  static isJSON(str) {
+    try {
+      return JSON.parse(str) && !!str;
+    } catch (e) {
+      return false;
+    }
+  }
+  static sumColumnOfArray(arr, _column) {
+    return arr.reduce((accumulator, object) => {
+      return accumulator + object[_column];
+    }, 0);
   }
 }

@@ -6,3 +6,7 @@ export enum ProductEnum {
   single_entry = 1,
   multiple_entry = 2,
 }
+
+export enum CustomerEnum {
+  visa = 1,
+}

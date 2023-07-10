@@ -45,7 +45,10 @@ export class PermissionAuthGuard implements CanActivate {
         return userPermissionArr.includes(userPermission);
       });
     }
-    if (!result) throw new ApiException('Không có quyền ghé thăm, vui lòng liên hệ với quản trị viên');
+    if (!result)
+      throw new ApiException(
+        'Không có quyền ghé thăm, vui lòng liên hệ với quản trị viên',
+      );
     return result;
   }
 }

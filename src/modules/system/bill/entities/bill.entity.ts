@@ -27,8 +27,10 @@ export class Bill extends BaseEntity {
     name: 'desc_detail',
     comment: 'mô tả chi tiết',
     type: 'text',
+    default: null,
   })
   @IsString()
+  @IsOptional()
   desc_detail: string;
 
   /* cost */

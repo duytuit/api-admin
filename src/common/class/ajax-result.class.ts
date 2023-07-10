@@ -32,3 +32,24 @@ export class AjaxResult {
     return new AjaxResult(code, msg, data);
   }
 }
+export class Alepay {
+  orderCode: string;
+  customMerchantId: string;
+  amount: number;
+  currency: string;
+  orderDescription: string;
+  totalItem: number;
+  checkoutType: number;
+  installment: boolean;
+  cancelUrl: string;
+  returnUrl: string;
+  buyerName: string;
+  buyerEmail: string;
+  buyerPhone: string;
+  buyerAddress: string;
+  buyerCity: number;
+  buyerCountry: string;
+  paymentHours: number;
+  language: string;
+  allowDomestic: boolean;
+}

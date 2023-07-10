@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString, isNumber } from 'class-validator';
 import { BaseEntity } from 'src/common/entities/base.entity';
 import { Column, Double, Entity, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
@@ -68,9 +68,9 @@ export class Customer extends BaseEntity {
     name: 'national_id',
     comment: 'Quốc tịch',
     default: null,
-    type: 'tinyint',
   })
   @IsOptional()
+  @IsNumber()
   nationalId: number;
 
   /* country_id */
@@ -78,7 +78,6 @@ export class Customer extends BaseEntity {
     name: 'country_id',
     comment: 'Quốc gia',
     default: null,
-    type: 'tinyint',
   })
   @IsOptional()
   countryId: number;
