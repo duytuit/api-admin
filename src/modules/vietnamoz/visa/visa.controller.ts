@@ -123,8 +123,8 @@ export class VisaController {
       alepay.totalItem = 1;
       alepay.checkoutType = 4;
       alepay.installment = false;
-      alepay.cancelUrl = 'http://127.0.0.1:8091/vietnamoz/visa/callback';
-      alepay.returnUrl = 'http://127.0.0.1:8091/vietnamoz/visa/callback';
+      alepay.cancelUrl = process.env.TRANSACTION_RESULT;
+      alepay.returnUrl = process.env.TRANSACTION_RESULT;
       alepay.buyerName = 'nguyen duy tu';
       alepay.buyerEmail = 'duytu89@gmail.com';
       alepay.buyerPhone = '0366961008';
@@ -248,7 +248,7 @@ export class VisaController {
 
     // const data = Helper.convertObjToParam(alepay);
     // console.log(data);
-    // return res.redirect('http://127.0.0.1:3000/transaction/result');
+    // return res.redirect(process.env.TRANSACTION_RESULT);
   }
   @Get('list')
   async findAll(
@@ -303,7 +303,7 @@ export class VisaController {
     // ]
     const checksumKey = 'HzxR9TCpMseGm1GUSNq873XGi156cP';
     data.tokenKey = 'La4vzOQVGlVZUL2jp46ETpDDsHNeE9';
-    data.returnUrl = 'http://127.0.0.1:8091/vietnamoz/visa/callback';
+    data.returnUrl = process.env.TRANSACTION_RESULT;
     const signature = Helper.makeSignature(data, checksumKey);
     console.log(signature);
     data.signature = signature;
