@@ -150,7 +150,7 @@ export class CloneViatorController {
       args: ['--no-sandbox'],
     });
     const page = await browser.newPage();
-    for (let index = 1; index < 5; index++) {
+    for (let index = 1; index < 20; index++) {
       const new_url =
         index == 1
           ? `https://www.viator.com/Hanoi/d351-ttd/`
