@@ -160,6 +160,7 @@ export class CloneViatorController {
         waitUntil: 'domcontentloaded',
         timeout: 30000,
       });
+      const element = await page.waitForSelector('.productsListProducts__2m5A');
       const lis = await page.$$(
         '.productsListProducts__2m5A > .productListCardWithDebug__3lZY',
       );
