@@ -59,8 +59,8 @@ export class Product extends BaseEntity {
   @Column({
     name: 'desc_short',
     comment: 'mô tả',
-    length: 500,
     default: null,
+    type: 'text',
   })
   @IsString()
   @IsOptional()
@@ -99,6 +99,18 @@ export class Product extends BaseEntity {
   @Type()
   @IsOptional()
   imageThumnail: string;
+
+  /* media gallery */
+  @Column({
+    name: 'media_gallery',
+    comment: 'Ảnh',
+    default: null,
+    type: 'longtext',
+  })
+  @IsString()
+  @Type()
+  @IsOptional()
+  mediaGallery: string;
 
   /* Rated */
   @Column({

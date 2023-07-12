@@ -273,8 +273,10 @@ export class VisaController {
     };
   }
   @Get('callback')
-  async callback(@Headers('Accept') Headers: string, @Req() req) {
-    await this.redis.rpush('customer_register_visa_callback', req.query);
+  async callback(@Req() req) {
+    console.log('sdfdfdsfds');
+    return 'sdfsdfsd';
+    // return await this.sendEmail();
   }
 
   @Patch(':id')
@@ -314,9 +316,9 @@ export class VisaController {
     return rs.data;
   }
   private async sendEmail() {
-    const to = 'duytu89@gmail.com';
-    const subject = 'Thông báo mới từ visa';
-    const text = 'xin chào';
+    const to = 'duytu8988@gmail.com';
+    const subject = 'Thông báo mới';
+    const text = 'xin chào bạn';
 
     return await this.mailService.sendEmail(to, subject, text);
   }

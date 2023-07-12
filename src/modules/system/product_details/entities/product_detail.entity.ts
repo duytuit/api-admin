@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 import { BaseEntity } from 'src/common/entities/base.entity';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
@@ -27,11 +27,26 @@ export class ProductDetail extends BaseEntity {
   @Column({
     name: 'image_thumnail',
     comment: 'Ảnh',
-    length: 500,
+    default: null,
+    type: 'longtext',
+  })
+  @IsString()
+  @Type()
+  @IsOptional()
+  imageThumnail: string;
+
+  /* travellerImages */
+
+  @Column({
+    name: 'traveller_images',
+    comment: 'Ảnh',
+    type: 'longtext',
     default: null,
   })
   @IsString()
-  imageThumnail: string;
+  @Type()
+  @IsOptional()
+  travellerImages: string;
 
   /* Release */
   @Column({
@@ -41,16 +56,42 @@ export class ProductDetail extends BaseEntity {
     default: null,
   })
   @IsString()
+  @IsOptional()
   release: string;
+
+  /* Slug */
+  @Column({
+    name: 'slug',
+    comment: 'slug sản phẩm',
+    length: 500,
+    default: null,
+  })
+  @Type()
+  @IsString()
+  @IsOptional()
+  slug: string;
+
+  /* Price */
+  @Column({
+    name: 'price',
+    comment: 'giá sản phẩm',
+    default: null,
+    type: 'double',
+  })
+  @Type()
+  @IsOptional()
+  price: number;
 
   /* Short Description */
   @Column({
     name: 'short_description',
     comment: 'Mô tả ngắn',
-    type: 'longtext',
+    type: 'text',
     default: null,
   })
   @IsString()
+  @Type()
+  @IsOptional()
   shortDescription: string;
 
   /*Description */
@@ -61,6 +102,8 @@ export class ProductDetail extends BaseEntity {
     default: null,
   })
   @IsString()
+  @Type()
+  @IsOptional()
   description: string;
 
   /* Chapters */
@@ -71,6 +114,8 @@ export class ProductDetail extends BaseEntity {
     default: null,
   })
   @IsString()
+  @Type()
+  @IsOptional()
   chapters: string;
 
   /* genres */
@@ -80,6 +125,8 @@ export class ProductDetail extends BaseEntity {
     default: null,
   })
   @IsString()
+  @Type()
+  @IsOptional()
   genresId: string;
 
   /* Project Id */
