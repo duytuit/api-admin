@@ -68,6 +68,7 @@ export class LoginService {
       'EX',
       60 * 5,
     );
+    console.log(result);
     return result;
   }
 
