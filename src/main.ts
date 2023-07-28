@@ -44,6 +44,10 @@ async function bootstrap() {
   /* Khảo sát cổng khởi động */
   await app.listen(8091);
   /* In swagger Địa chỉ */
+  app.enableCors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  });
   console.log('http://127.0.0.1:3000/swagger-ui/');
 }
 bootstrap();
