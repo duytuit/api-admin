@@ -6,9 +6,7 @@ import { setupSwagger } from './setup-swagger';
 import * as history from 'connect-history-api-fallback';
 import helmet from 'helmet';
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    cors: true,
-  });
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   /* thiết lập HTTPĐấu thầu để giúp bảo vệ các ứng dụng khỏi một số người nổi tiếng Web Ảnh hưởng của lỗ hổng */
   app.use(
@@ -46,10 +44,7 @@ async function bootstrap() {
   /* Khảo sát cổng khởi động */
   await app.listen(8091);
   /* In swagger Địa chỉ */
-  // app.enableCors({
-  //   origin: '*',
-  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  // });
+  app.enableCors();
   console.log('http://127.0.0.1:3000/swagger-ui/');
 }
 bootstrap();
