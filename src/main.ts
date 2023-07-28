@@ -16,18 +16,18 @@ async function bootstrap() {
   );
 
   /* Bắt đầu vue của history kiểu mẫu */
-  app.use(
-    history({
-      rewrites: [
-        {
-          from: /^\/swagger-ui\/.*$/,
-          to: function (context) {
-            return context.parsedUrl.pathname;
-          },
-        },
-      ],
-    }),
-  );
+  // app.use(
+  //   history({
+  //     rewrites: [
+  //       {
+  //         from: /^\/swagger-ui\/.*$/,
+  //         to: function (context) {
+  //           return context.parsedUrl.pathname;
+  //         },
+  //       },
+  //     ],
+  //   }),
+  // );
 
   /* Định cấu hình thư mục tài nguyên tĩnh */
   app.useStaticAssets(join(__dirname, '../public'));
@@ -39,11 +39,10 @@ async function bootstrap() {
   }
 
   /* Bắt đầu swagger */
-  setupSwagger(app);
-
+  //setupSwagger(app);
+  app.setGlobalPrefix('api');
   /* Khảo sát cổng khởi động */
   await app.listen(8091);
-
   /* In swagger Địa chỉ */
   console.log('http://127.0.0.1:3000/swagger-ui/');
 }

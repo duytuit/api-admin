@@ -44,104 +44,109 @@ export class CloneViatorController {
   ) {}
   @Get('list')
   async findAll(@Req() req) {
-    let _product = null;
-    do {
-      _product = await this.redis.lpop('product_viator');
-      if (_product) {
-        _product = JSON.parse(_product);
-        try {
-          console.log(_product);
-        } catch (exce: any) {
-          console.log(exce.stack);
-          console.log(_product);
-          this.redis.rpush('product_viator', _product);
-        }
-      }
-    } while (_product);
+    // let _product = null;
+    // do {
+    //   _product = await this.redis.lpop('product_viator');
+    //   if (_product) {
+    //     _product = JSON.parse(_product);
+    //     try {
+    //       console.log(_product);
+    //     } catch (exce: any) {
+    //       console.log(exce.stack);
+    //       console.log(_product);
+    //       this.redis.rpush('product_viator', _product);
+    //     }
+    //   }
+    // } while (_product);
     // const reqProductList = new ReqProductList();
     // reqProductList.projectId = 5;
     // const list = await this.productsService.list(req, reqProductList);
     // console.log(list.total);
-    // const browser = await puppeteer.launch({
-    //   headless: true,
-    //   args: ['--no-sandbox'],
-    // });
-    // const page = await browser.newPage();
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox'],
+    });
+    const page = await browser.newPage();
+
     // for (const item of list.rows) {
-    //   const fullUrl = `${item.linkExternal}`;
-    //   console.log(`begin for ${fullUrl}`);
-    //   const dataObj = {};
-    //   await page.goto(fullUrl, {
-    //     waitUntil: 'domcontentloaded',
-    //     timeout: 30000,
-    //   });
-    //   dataObj['title_detail'] = await page.$eval(
-    //     'h1.title2__C3R7',
-    //     (item) => item.innerHTML,
-    //   );
-    //   dataObj['price'] = await page.$eval(
-    //     '.availabilitySearchWrapper__2t0X > h2 > span.moneyView__2HPx.defaultColor__1NL9',
-    //     (item) => item.textContent,
-    //   );
-    //   await page.waitForTimeout(1000);
-    //   dataObj['Overview'] = await page.$eval(
-    //     '.productInfoCol__26F0 .overviewWrapper__bMs4',
-    //     (item) => item.innerHTML,
-    //   );
-    //   const contents = await page.$$eval(
-    //     '.productInfoCol__26F0 > .section__3AOF',
-    //     (links) => {
-    //       const content = links.map((el) => ({
-    //         content_child: el.querySelector('.sectionContentWrapper__2gNE')
-    //           .innerHTML,
-    //       }));
-    //       return content;
-    //     },
-    //   );
-    //   dataObj['contents'] = '';
-    //   for (const item of contents) {
-    //     dataObj['contents'] = dataObj['contents'] + item.content_child;
-    //   }
-    //   const product = await page.evaluate(async () => {
-    //     // use window.readfile to read contents of a file
-    //     return await (window as any).__PRELOADED_DATA__.pageModel.product;
-    //   }); // .taLocationId;productCode
-    //   const supplierImages = [];
-    //   product.mediaGallery.supplierImages.forEach((item) => {
-    //     supplierImages.push({
-    //       src: item.fullSizeImage.src,
-    //       alt: item.fullSizeImage.alt,
-    //     });
-    //   });
-    //   const travellerImages = [];
-    //   product.mediaGallery.travellerImages.forEach((item) => {
-    //     travellerImages.push({
-    //       src: item.fullSizeImage.src,
-    //       alt: item.fullSizeImage.alt,
-    //     });
-    //   });
-    //   console.log(dataObj);
-    //   const rs_pro_detail = await this.productDetailsService.findByName(
-    //     dataObj['title_detail'],
-    //   );
-    //   if (!rs_pro_detail) {
-    //     const product_detail = new ProductDetail();
-    //     product_detail.name = dataObj['title_detail'];
-    //     product_detail.shortDescription = dataObj['Overview'];
-    //     product_detail.description = dataObj['contents'];
-    //     product_detail.imageThumnail = JSON.stringify(supplierImages);
-    //     product_detail.travellerImages = JSON.stringify(travellerImages);
-    //     product_detail.price =
-    //       parseInt(dataObj['price'].replace('$', '')) * 23672;
-    //     product_detail.productId = item.id;
-    //     product_detail.projectId = 5;
-    //     await this.productDetailsService.addOrUpdate(product_detail);
-    //   } else {
-    //     console.log('sản phẩm đã tồn tại');
-    //   }
+    const fullUrl = `list`;
+    console.log(`begin for ${fullUrl}`);
+    const dataObj = {};
+    await page.goto(
+      'https://www.viator.com/tours/Hanoi/2-days-1-night-at-GREAT-boat-included-transfer-kayak-cave-island-tours-meals/d351-100902P7',
+      {
+        waitUntil: 'domcontentloaded',
+        timeout: 30000,
+      },
+    );
+    const element = await page.waitForSelector('.container__1ksl');
+    dataObj['title_detail'] = await page.$eval(
+      'h1.title2__C3R7',
+      (item) => item.innerHTML,
+    );
+    dataObj['price'] = await page.$eval(
+      '.availabilitySearchWrapper__2t0X > h2 > span.moneyView__2HPx.defaultColor__1NL9',
+      (item) => item.textContent,
+    );
+    await page.waitForTimeout(1000);
+    dataObj['Overview'] = await page.$eval(
+      '.productInfoCol__26F0 .overviewWrapper__bMs4',
+      (item) => item.innerHTML,
+    );
+    const contents = await page.$$eval(
+      '.productInfoCol__26F0 > .section__3AOF',
+      (links) => {
+        const content = links.map((el) => ({
+          content_child: el.querySelector('.sectionContentWrapper__2gNE')
+            .innerHTML,
+        }));
+        return content;
+      },
+    );
+    dataObj['contents'] = '';
+    for (const item of contents) {
+      dataObj['contents'] = dataObj['contents'] + item.content_child;
+    }
+    const product = await page.evaluate(async () => {
+      // use window.readfile to read contents of a file
+      return await (window as any).__PRELOADED_DATA__.pageModel.product;
+    }); // .taLocationId;productCode
+    const supplierImages = [];
+    product.mediaGallery.supplierImages.forEach((item) => {
+      supplierImages.push({
+        src: item.fullSizeImage.src,
+        alt: item.fullSizeImage.alt,
+      });
+    });
+    const travellerImages = [];
+    product.mediaGallery.travellerImages.forEach((item) => {
+      travellerImages.push({
+        src: item.fullSizeImage.src,
+        alt: item.fullSizeImage.alt,
+      });
+    });
+    console.log(dataObj);
+    // const rs_pro_detail = await this.productDetailsService.findByName(
+    //   dataObj['title_detail'],
+    // );
+    // if (!rs_pro_detail) {
+    //   const product_detail = new ProductDetail();
+    //   product_detail.name = dataObj['title_detail'];
+    //   product_detail.shortDescription = dataObj['Overview'];
+    //   product_detail.description = dataObj['contents'];
+    //   product_detail.imageThumnail = JSON.stringify(supplierImages);
+    //   product_detail.travellerImages = JSON.stringify(travellerImages);
+    //   product_detail.price =
+    //     parseInt(dataObj['price'].replace('$', '')) * 23672;
+    //   product_detail.productId = item.id;
+    //   product_detail.projectId = 5;
+    //   await this.productDetailsService.addOrUpdate(product_detail);
+    // } else {
+    //   console.log('sản phẩm đã tồn tại');
     // }
-    // await page.close();
-    // await browser.close();
+    // }
+    await page.close();
+    await browser.close();
   }
   @Get('setCateViator')
   public async cate_viator() {
@@ -160,7 +165,7 @@ export class CloneViatorController {
         waitUntil: 'domcontentloaded',
         timeout: 30000,
       });
-      const element = await page.waitForSelector('.productsListProducts__2m5A');
+      const element = await page.waitForSelector('.container__1ksl');
       const lis = await page.$$(
         '.productsListProducts__2m5A > .productListCardWithDebug__3lZY',
       );
