@@ -27,9 +27,11 @@ export class Receipt extends BaseEntity {
     name: 'desc_detail',
     comment: 'mô tả chi tiết',
     type: 'text',
+    default: null,
   })
   @IsString()
-  desc_detail: string;
+  @IsOptional()
+  descDetail: string;
 
   /* cost */
   @Column({
@@ -154,8 +156,9 @@ export class Receipt extends BaseEntity {
     default: null,
   })
   @Type()
+  @IsNumber()
   @IsOptional()
-  billId: string;
+  billId: number;
 
   /* metadata */
   @Column({

@@ -43,12 +43,18 @@ export class MailService {
     });
   }
 
-  async sendEmail(to: string, subject: string, text: string): Promise<void> {
+  async sendEmail(
+    to: string,
+    subject: string,
+    text: string,
+    html: string,
+  ): Promise<void> {
     const mailOptions: nodemailer.SendMailOptions = {
-      from: 'duytu89@gmail.com',
+      from: 'visavisa.net',
       to,
       subject,
       text,
+      html,
     };
 
     return await this.transporter.sendMail(mailOptions);

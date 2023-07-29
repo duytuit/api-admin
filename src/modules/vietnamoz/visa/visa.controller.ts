@@ -57,6 +57,8 @@ import { EntityManager } from 'typeorm';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { TransactionPayment } from 'src/modules/system/transaction_payment/entities/transaction_payment.entity';
 import { log } from 'console';
+import { Receipt } from 'src/modules/system/receipt/entities/receipt.entity';
+import { PaymentDetail } from 'src/modules/system/payment_detail/entities/payment_detail.entity';
 
 @Controller('vietnamoz/visa')
 @Public()
@@ -151,7 +153,7 @@ export class VisaController {
             bill.billCode = orderCode;
             bill.cost = cost.toString();
             bill.customerAddress = item.email;
-            bill.customerName = item.first_name + ' ' + item.first_name;
+            bill.customerName = item.first_name + ' ' + item.last_name;
             bill.cycleName = parseInt(Helper.getCycleName());
             bill.email = item.email;
             bill.phone = item.phone;
@@ -162,7 +164,7 @@ export class VisaController {
                 ? cost
                 : Math.round(cost / parseInt(register.exchange_rate));
             alepay.currency = register.currency == 'VND' ? 'VND' : 'USD';
-            alepay.buyerName = item.first_name + ' ' + item.first_name;
+            alepay.buyerName = item.first_name + ' ' + item.last_name;
             alepay.buyerEmail = item.email;
             alepay.buyerPhone = item.phone;
             alepay.buyerAddress = item.national;
@@ -220,35 +222,93 @@ export class VisaController {
         // await queryRunner.rollbackTransaction();
         throw error;
       }
-      const rs_alepay = await this.sendOrder(alepay);
-      await this.redis.rpush(
-        'customer_register_visa_rs_alepay',
-        JSON.stringify(rs_alepay),
-      );
-      console.log(alepay);
-      const transactionPayment = new TransactionPayment();
-      transactionPayment.billId = rs_bill.id;
-      transactionPayment.code = rs_alepay.code;
-      transactionPayment.messager = rs_alepay.message;
-      transactionPayment.transactionCode = rs_alepay.transactionCode;
-      transactionPayment.paid = rs_bill.cost;
-      transactionPayment.projectId = parseInt(req.query.projectId);
-      await this.TransactionPaymentService.addOrUpdate(transactionPayment);
-      return rs_alepay;
+      // const rs_alepay = await this.sendOrder(alepay);
+      // await this.redis.rpush(
+      //   'customer_register_visa_rs_alepay',
+      //   JSON.stringify(rs_alepay),
+      // );
+      // console.log(alepay);
+      // const transactionPayment = new TransactionPayment();
+      // transactionPayment.billId = rs_bill.id;
+      // transactionPayment.code = rs_alepay.code;
+      // transactionPayment.messager = rs_alepay.message;
+      // transactionPayment.transactionCode = rs_alepay.transactionCode;
+      // transactionPayment.paid = rs_bill.cost;
+      // transactionPayment.projectId = parseInt(req.query.projectId);
+      // await this.TransactionPaymentService.addOrUpdate(transactionPayment);
+      register.bill = rs_bill;
+      return register;
     } else {
       return AjaxResult.error('không có dữ liệu đăng ký', 401, null);
     }
+  }
+  @Post('receipt/create')
+  async createReceipt(@Req() req, @Body() visa: any) {
+    console.log('projectId', req.query.projectId);
+    // validate data
+    if (!Helper.isJSON(visa.register))
+      return AjaxResult.error('không đúng định dạng', 401, null);
+    // lưu trên redis 1 tháng
+    await this.redis.rpush(
+      'payment_register_visa',
+      JSON.stringify(visa.register),
+    );
+    const register = JSON.parse(visa.register);
+    console.log(register);
 
-    //return await this.sendOrder(alepay);
-    // return await this.sendEmail();
-    // console.log(abc);
-    // return {
-    //   abc: 'dsfdsfds',
-    // };
+    if (register.customers.length > 0 && register.product) {
+      const orderCode = 'REP' + Helper.getTime();
+      const customMerchantId = Helper.generateRamdomByLength(6);
+      let rs_receipt = null;
+      try {
+        for (let index = 0; index < register.customers.length; index++) {
+          const item = register.customers[index];
+          if (index == 0) {
+            const cost =
+              parseInt(register.product.price) * register.customers.length +
+              (register.services
+                ? Helper.sumColumnOfArray(register.services, 'price') *
+                  register.customers.length
+                : 0);
+            const receipt = new Receipt();
+            receipt.receitpCode = orderCode;
+            receipt.cost = cost.toString();
+            receipt.customerAddress = item.email;
+            receipt.customerName = item.first_name + ' ' + item.last_name;
+            receipt.cycleName = parseInt(Helper.getCycleName());
+            receipt.email = item.email;
+            receipt.phone = item.phone;
+            receipt.billId = register.bill.id;
+            receipt.projectId = parseInt(req.query.projectId);
+            rs_receipt = await this.ReceiptService.addOrUpdate(receipt);
+            // send email customer
+            const to = item.email;
+            const subject = 'Payment info';
+            const text = register.templateEmail;
+            this.mailService.sendEmail(to, subject, null, text);
+          }
+        }
+        // await queryRunner.commitTransaction();
+      } catch (error) {
+        console.log('+++++++++++++++++++++++++++++');
+        await this.redis.rpush(
+          'payment_register_visa_error',
+          JSON.stringify(error),
+        );
+        throw error;
+      }
+      register.receipt = rs_receipt;
+      // send email admin
+      const to = 'duytu89@gmail.com';
+      const subject = 'Payment info';
+      const text = register.templateEmail;
+      this.mailService.sendEmail(to, subject, null, text);
+      // send email partner
 
-    // const data = Helper.convertObjToParam(alepay);
-    // console.log(data);
-    // return res.redirect(process.env.TRANSACTION_RESULT);
+      return register;
+    } else {
+      return AjaxResult.error('không có dữ liệu đăng ký', 401, null);
+    }
   }
   @Get('list')
   async findAll(
@@ -320,7 +380,7 @@ export class VisaController {
     const subject = 'Thông báo mới';
     const text = 'xin chào bạn';
 
-    return await this.mailService.sendEmail(to, subject, text);
+    return await this.mailService.sendEmail(to, subject, null, null);
   }
   private async sendEmailApi() {
     const to = 'duytu89@gmail.com';

@@ -26,7 +26,6 @@ import { ProductsModule } from './modules/system/products/products.module';
 import { ProductDetailsModule } from './modules/system/product_details/product_details.module';
 import { BlogsModule } from './modules/system/blogs/blogs.module';
 import { VisaModule } from './modules/vietnamoz/visa/visa.module';
-import { PaymentsModule } from './modules/system/payments/payments.module';
 import { GenresModule } from './modules/system/genres/genres.module';
 import { ChapterDetailModule } from './modules/system/chapter_detail/chapter_detail.module';
 import { CloneVisanaModule } from './modules/system/clone_visana/clone_visana.module';
@@ -105,7 +104,6 @@ const aliasProviders = createAliasProviders();
     ProductDetailsModule,
     BlogsModule,
     VisaModule,
-    PaymentsModule,
     GenresModule,
     ChapterDetailModule,
     CloneVisanaModule,
