@@ -32,6 +32,7 @@ export class CategoriesService {
       if (reqCategoryList.projectId) {
         where.projectId = reqCategoryList.projectId;
       }
+      where.status = 0;
       const result = await this.categoryRepository.findAndCount({
         where,
         skip: reqCategoryList.skip,
