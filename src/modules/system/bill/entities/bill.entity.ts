@@ -80,7 +80,7 @@ export class Bill extends BaseEntity {
     name: 'email',
     comment: 'email',
     default: null,
-    length: 20,
+    length: 200,
   })
   @Type()
   @IsOptional()

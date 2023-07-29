@@ -25,7 +25,7 @@ export class Customer extends BaseEntity {
   @Column({
     name: 'first_name',
     comment: 'Tên đầu tiên',
-    length: 50,
+    length: 100,
   })
   @IsString()
   first_name: string;
@@ -34,7 +34,7 @@ export class Customer extends BaseEntity {
   @Column({
     name: 'last_name',
     comment: 'Tên cuối',
-    length: 50,
+    length: 100,
   })
   @IsString()
   last_name: string;
@@ -55,7 +55,7 @@ export class Customer extends BaseEntity {
   @Column({
     name: 'email',
     comment: 'email',
-    length: 100,
+    length: 500,
     default: null,
   })
   @Type()
