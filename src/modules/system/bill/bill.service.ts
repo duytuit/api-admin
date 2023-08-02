@@ -33,6 +33,9 @@ export class BillService {
       }
       const result = await this.BillRepository.findAndCount({
         where,
+        order: {
+          id: 'DESC',
+        },
         skip: ReqBillList.skip,
         take: ReqBillList.take,
       });

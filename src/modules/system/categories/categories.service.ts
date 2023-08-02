@@ -62,6 +62,9 @@ export class CategoriesService {
       // where.status = 0;
       const result = await this.categoryRepository.findAndCount({
         where,
+        order: {
+          id: 'DESC',
+        },
         skip: reqCategoryList.skip,
         take: reqCategoryList.take,
       });

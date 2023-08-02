@@ -36,6 +36,9 @@ export class ReceiptService {
       }
       const result = await this.ReceiptRepository.findAndCount({
         where,
+        order: {
+          id: 'DESC',
+        },
         skip: ReqReceiptList.skip,
         take: ReqReceiptList.take,
       });

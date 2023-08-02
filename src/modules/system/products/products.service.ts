@@ -55,7 +55,7 @@ export class ProductsService {
     const rs_list = await this.redis.get('product' + req.originalUrl);
     if (!rs_list) {
       const where: FindOptionsWhere<Product> = {};
-      if (Helper._isString(reqProductList.name)) {
+      if (reqProductList.name && Helper._isString(reqProductList.name)) {
         where.name = Like(`%${reqProductList.name}%`);
       }
       if (reqProductList.projectId) {
@@ -69,6 +69,9 @@ export class ProductsService {
       }
       const result = await this.productRepository.findAndCount({
         where,
+        order: {
+          id: 'DESC',
+        },
         skip: reqProductList.skip,
         take: reqProductList.take,
       });

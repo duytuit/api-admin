@@ -40,6 +40,9 @@ export class CustomerService {
       }
       const result = await this.CustomerRepository.findAndCount({
         where,
+        order: {
+          id: 'DESC',
+        },
         skip: ReqCustomerList.skip,
         take: ReqCustomerList.take,
       });
