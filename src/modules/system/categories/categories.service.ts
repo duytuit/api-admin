@@ -31,6 +31,10 @@ export class CategoriesService {
   }
 
   async changeStatus(reqChangStatusDto: ReqChangStatusDto, updateBy?: string) {
+    const keys = await this.redis.keys('*categories*');
+    if (keys.length > 0) {
+      await this.redis.del(keys);
+    }
     await this.categoryRepository
       .createQueryBuilder('category')
       .update()
