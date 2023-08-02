@@ -12,6 +12,7 @@ import { CategoriesService } from './categories.service';
 import {
   CreateCategoryDto,
   ReqCategoryList,
+  ReqChangStatusDto,
   UpdateCategoryDto,
 } from './dto/req-category.dto';
 import { Public } from 'src/common/decorators/public.decorator';
@@ -38,6 +39,10 @@ export class CategoriesController {
   @Post('update')
   update(@Body() updateCategoryDto: UpdateCategoryDto) {
     return this.categoriesService.addOrUpdate(updateCategoryDto);
+  }
+  @Post('update/status')
+  updateStatus(@Body() ReqChangStatusDto: ReqChangStatusDto) {
+    return this.categoriesService.changeStatus(ReqChangStatusDto);
   }
   @Get('list')
   @ApiPaginatedResponse(Category)

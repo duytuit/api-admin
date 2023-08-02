@@ -1,12 +1,17 @@
 import { async } from 'rxjs';
 import { Injectable } from '@nestjs/common';
-import { CreateCategoryDto, ReqCategoryList } from './dto/req-category.dto';
+import {
+  CreateCategoryDto,
+  ReqCategoryList,
+  ReqChangStatusDto,
+} from './dto/req-category.dto';
 import { UpdateCategoryDto } from './dto/res-category.dto';
 import { Category } from './entities/category.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Like, Repository } from 'typeorm';
 import { InjectRedis, Redis } from '@nestjs-modules/ioredis';
 import { PaginatedDto } from 'src/common/dto/paginated.dto';
+import { Helper } from 'src/common/utils/helper';
 
 @Injectable()
 export class CategoriesService {
@@ -18,6 +23,17 @@ export class CategoriesService {
   ) {}
   async addOrUpdate(CreateCategoryDto: CreateCategoryDto) {
     return await this.categoryRepository.save(CreateCategoryDto);
+  }
+
+  async changeStatus(reqChangStatusDto: ReqChangStatusDto, updateBy?: string) {
+    await this.categoryRepository
+      .createQueryBuilder('category')
+      .update()
+      .set({
+        status: reqChangStatusDto.status,
+      })
+      .where({ id: reqChangStatusDto.id })
+      .execute();
   }
   async list(
     req,
@@ -32,7 +48,11 @@ export class CategoriesService {
       if (reqCategoryList.projectId) {
         where.projectId = reqCategoryList.projectId;
       }
-      where.status = 0;
+
+      if (Helper.isNumeric(reqCategoryList.id)) {
+        where.id = parseInt(reqCategoryList.id);
+      }
+      // where.status = 0;
       const result = await this.categoryRepository.findAndCount({
         where,
         skip: reqCategoryList.skip,

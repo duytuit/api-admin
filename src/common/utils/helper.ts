@@ -110,6 +110,9 @@ export class Helper {
       return false;
     }
   }
+  static isNumeric(value) {
+    return /^-?\d+$/.test(value);
+  }
   static sumColumnOfArray(arr, _column) {
     return arr.reduce((accumulator, object) => {
       return accumulator + object[_column];
