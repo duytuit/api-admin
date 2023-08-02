@@ -184,6 +184,7 @@ export class VisaController {
           customer.passportImage = item.passport_image;
           customer.passportNo = item.passport_no;
           customer.phone = item.phone;
+          customer.travelDate = item.travel_date;
           customer.profession = item.profession;
           customer.projectId = parseInt(req.query.projectId);
           customer.type = CustomerEnum.visa;
@@ -271,7 +272,7 @@ export class VisaController {
                   register.customers.length
                 : 0);
             const receipt = new Receipt();
-            receipt.receitpCode = orderCode;
+            receipt.receiptCode = orderCode;
             receipt.cost = cost.toString();
             receipt.customerAddress = item.email;
             receipt.customerName = item.first_name + ' ' + item.last_name;

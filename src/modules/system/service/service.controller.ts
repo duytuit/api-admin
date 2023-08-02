@@ -20,6 +20,7 @@ import { DataObj } from 'src/common/class/data-obj.class';
 import { ApiPaginatedResponse } from 'src/common/decorators/api-paginated-response.decorator';
 import { PaginationPipe } from 'src/common/pipes/pagination.pipe';
 import { Service } from './entities/service.entity';
+import { ReqChangeStatusDto } from 'src/common/dto/params.dto';
 
 @Controller('system/service')
 @Public()
@@ -41,17 +42,16 @@ export class ServiceController {
     @Req() req,
     @Query(PaginationPipe) ReqServiceList: ReqServiceList,
   ) {
-    const rs_list = await this.serviceService.list(req, ReqServiceList);
-    return DataObj.create(rs_list);
+    return await this.serviceService.list(req, ReqServiceList);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.serviceService.findOne(+id);
+  @Post('update/status')
+  updateStatus(@Body() ReqChangeStatusDto: ReqChangeStatusDto) {
+    return this.serviceService.changeStatus(ReqChangeStatusDto);
   }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.serviceService.remove(+id);
+  @Post('delete')
+  remove(@Req() req, @Body() body: any) {
+    // console.log(body);
+    return this.serviceService.remove(body);
   }
 }

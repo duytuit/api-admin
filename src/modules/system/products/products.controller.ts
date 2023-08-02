@@ -20,8 +20,9 @@ import { Product } from './entities/product.entity';
 import { DataObj } from 'src/common/class/data-obj.class';
 import { ApiPaginatedResponse } from 'src/common/decorators/api-paginated-response.decorator';
 import { PaginationPipe } from 'src/common/pipes/pagination.pipe';
+import { ReqChangeStatusDto } from 'src/common/dto/params.dto';
 
-@Controller('system/products')
+@Controller('system/product')
 @Public()
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
@@ -40,17 +41,20 @@ export class ProductsController {
     @Req() req,
     @Query(PaginationPipe) ReqProductList: ReqProductList,
   ) {
-    const rs_list = await this.productsService.list(req, ReqProductList);
-    return DataObj.create(rs_list);
+    return await this.productsService.list(req, ReqProductList);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.productsService.findOne(+id);
   }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.productsService.remove(+id);
+  @Post('update/status')
+  updateStatus(@Body() ReqChangeStatusDto: ReqChangeStatusDto) {
+    return this.productsService.changeStatus(ReqChangeStatusDto);
+  }
+  @Post('delete')
+  remove(@Req() req, @Body() body: any) {
+    // console.log(body);
+    return this.productsService.remove(body);
   }
 }

@@ -5,8 +5,9 @@ import { InjectRedis } from '@nestjs-modules/ioredis';
 import { InjectRepository } from '@nestjs/typeorm';
 import Redis from 'ioredis';
 import { PaginatedDto } from 'src/common/dto/paginated.dto';
-import { Repository, FindOptionsWhere } from 'typeorm';
+import { Repository, FindOptionsWhere, Like } from 'typeorm';
 import { Receipt } from './entities/receipt.entity';
+import { ReqChangeStatusDto } from 'src/common/dto/params.dto';
 
 @Injectable()
 export class ReceiptService {
@@ -17,18 +18,22 @@ export class ReceiptService {
     private readonly ReceiptRepository: Repository<Receipt>,
   ) {}
   async addOrUpdate(CreateReceiptDto: CreateReceiptDto) {
+    const keys = await this.redis.keys('*receipt*');
+    if (keys.length > 0) {
+      await this.redis.del(keys);
+    }
     return await this.ReceiptRepository.save(CreateReceiptDto);
   }
   async list(
     req,
     ReqReceiptList: ReqReceiptList,
   ): Promise<PaginatedDto<Receipt>> {
-    const rs_list = await this.redis.get(req.originalUrl);
+    const rs_list = await this.redis.get('receipt' + req.originalUrl);
     if (!rs_list) {
       const where: FindOptionsWhere<Receipt> = {};
-      // if (reqReceiptList.name) {
-      //   where.name = Like(`%${reqReceiptList.name}%`);
-      // }
+      if (ReqReceiptList.name) {
+        where.customerName = Like(`%${ReqReceiptList.name}%`);
+      }
       const result = await this.ReceiptRepository.findAndCount({
         where,
         skip: ReqReceiptList.skip,
@@ -39,7 +44,7 @@ export class ReceiptService {
         total: result[1],
       };
       await this.redis.set(
-        req.originalUrl,
+        'receipt' + req.originalUrl,
         JSON.stringify(rs_list),
         'EX',
         process.env.TIME_EXPIRE_REDIS || 60,
@@ -48,23 +53,30 @@ export class ReceiptService {
     }
     return rs_list ? JSON.parse(rs_list) : null;
   }
-  create(createReceiptDto: CreateReceiptDto) {
-    return 'This action adds a new receipt';
+  async changeStatus(
+    ReqChangeStatusDto: ReqChangeStatusDto,
+    updateBy?: string,
+  ) {
+    const keys = await this.redis.keys('*receipt*');
+    if (keys.length > 0) {
+      await this.redis.del(keys);
+    }
+    await this.ReceiptRepository.createQueryBuilder('receipt')
+      .update()
+      .set({
+        status: ReqChangeStatusDto.status,
+      })
+      .where({ id: ReqChangeStatusDto.id })
+      .execute();
   }
-
-  findAll() {
-    return `This action returns all receipt`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} receipt`;
-  }
-
-  update(id: number, updateReceiptDto: UpdateReceiptDto) {
-    return `This action updates a #${id} receipt`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} receipt`;
+  async remove(body: any) {
+    const keys = await this.redis.keys('*receipt*');
+    if (keys.length > 0) {
+      await this.redis.del(keys);
+    }
+    await this.ReceiptRepository.createQueryBuilder('receipt')
+      .softDelete()
+      .where({ id: body.id, projectId: body.projectId })
+      .execute();
   }
 }

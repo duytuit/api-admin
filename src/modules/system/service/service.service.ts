@@ -7,6 +7,8 @@ import Redis from 'ioredis';
 import { PaginatedDto } from 'src/common/dto/paginated.dto';
 import { Repository, FindOptionsWhere } from 'typeorm';
 import { Service } from './entities/service.entity';
+import { ReqChangeStatusDto } from 'src/common/dto/params.dto';
+import { Helper } from 'src/common/utils/helper';
 
 @Injectable()
 export class ServiceService {
@@ -17,6 +19,10 @@ export class ServiceService {
     private readonly ServiceRepository: Repository<Service>,
   ) {}
   async addOrUpdate(CreateServiceDto: CreateServiceDto) {
+    const keys = await this.redis.keys('*service*');
+    if (keys.length > 0) {
+      await this.redis.del(keys);
+    }
     return await this.ServiceRepository.save(CreateServiceDto);
   }
   async list(
@@ -34,6 +40,9 @@ export class ServiceService {
       }
       if (ReqServiceList.categoryId) {
         where.categoryId = ReqServiceList.categoryId;
+      }
+      if (Helper.isNumeric(ReqServiceList.id)) {
+        where.id = parseInt(ReqServiceList.id);
       }
       const result = await this.ServiceRepository.findAndCount({
         where,
@@ -54,23 +63,30 @@ export class ServiceService {
     }
     return rs_list ? JSON.parse(rs_list) : null;
   }
-  create(createServiceDto: CreateServiceDto) {
-    return 'This action adds a new service';
+  async changeStatus(
+    ReqChangeStatusDto: ReqChangeStatusDto,
+    updateBy?: string,
+  ) {
+    const keys = await this.redis.keys('*service*');
+    if (keys.length > 0) {
+      await this.redis.del(keys);
+    }
+    await this.ServiceRepository.createQueryBuilder('service')
+      .update()
+      .set({
+        status: ReqChangeStatusDto.status,
+      })
+      .where({ id: ReqChangeStatusDto.id })
+      .execute();
   }
-
-  findAll() {
-    return `This action returns all service`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} service`;
-  }
-
-  update(id: number, updateServiceDto: UpdateServiceDto) {
-    return `This action updates a #${id} service`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} service`;
+  async remove(body: any) {
+    const keys = await this.redis.keys('*service*');
+    if (keys.length > 0) {
+      await this.redis.del(keys);
+    }
+    await this.ServiceRepository.createQueryBuilder('service')
+      .softDelete()
+      .where({ id: body.id, projectId: body.projectId })
+      .execute();
   }
 }

@@ -7,17 +7,6 @@ import { Type } from 'class-transformer';
 export class CreateCategoryDto extends OmitType(Category, ['id'] as const) {}
 export class UpdateCategoryDto extends Category {}
 
-export class ReqChangStatusDto {
-  /* Id danh mục*/
-  @Type()
-  @IsNumber()
-  id: number;
-
-  /* Trạng thái */
-  @Type()
-  @IsNumber()
-  status: number;
-}
 export class ReqCategoryList extends PaginationDto {
   /* ID */
   @IsOptional()

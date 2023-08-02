@@ -45,11 +45,11 @@ export class Service extends BaseEntity {
     name: 'price',
     comment: 'Giá',
     type: 'double',
-    default: 0,
+    default: null,
   })
-  @IsString()
+  @Type()
   @IsOptional()
-  price: string;
+  price: number;
 
   /* type */
   @Column({

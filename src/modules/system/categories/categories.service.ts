@@ -1,10 +1,5 @@
-import { async } from 'rxjs';
 import { Injectable } from '@nestjs/common';
-import {
-  CreateCategoryDto,
-  ReqCategoryList,
-  ReqChangStatusDto,
-} from './dto/req-category.dto';
+import { CreateCategoryDto, ReqCategoryList } from './dto/req-category.dto';
 import { UpdateCategoryDto } from './dto/res-category.dto';
 import { Category } from './entities/category.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -12,7 +7,7 @@ import { FindOptionsWhere, Like, Repository } from 'typeorm';
 import { InjectRedis, Redis } from '@nestjs-modules/ioredis';
 import { PaginatedDto } from 'src/common/dto/paginated.dto';
 import { Helper } from 'src/common/utils/helper';
-import { LogDebug } from 'src/common/debugLog';
+import { ReqChangeStatusDto } from 'src/common/dto/params.dto';
 
 @Injectable()
 export class CategoriesService {
@@ -30,7 +25,10 @@ export class CategoriesService {
     return await this.categoryRepository.save(CreateCategoryDto);
   }
 
-  async changeStatus(reqChangStatusDto: ReqChangStatusDto, updateBy?: string) {
+  async changeStatus(
+    reqChangeStatusDto: ReqChangeStatusDto,
+    updateBy?: string,
+  ) {
     const keys = await this.redis.keys('*categories*');
     if (keys.length > 0) {
       await this.redis.del(keys);
@@ -39,9 +37,9 @@ export class CategoriesService {
       .createQueryBuilder('category')
       .update()
       .set({
-        status: reqChangStatusDto.status,
+        status: reqChangeStatusDto.status,
       })
-      .where({ id: reqChangStatusDto.id })
+      .where({ id: reqChangeStatusDto.id })
       .execute();
   }
   async list(
@@ -51,9 +49,9 @@ export class CategoriesService {
     const rs_list = await this.redis.get(req.originalUrl);
     if (!rs_list) {
       const where: FindOptionsWhere<Category> = {};
-      // if (reqCategoryList.name) {
-      //   where.name = Like(`%${reqCategoryList.name}%`);
-      // }
+      if (reqCategoryList.name) {
+        where.name = Like(`%${reqCategoryList.name}%`);
+      }
       if (reqCategoryList.projectId) {
         where.projectId = reqCategoryList.projectId;
       }
@@ -99,7 +97,15 @@ export class CategoriesService {
     return `This action updates a #${id} category`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  async remove(body: any) {
+    const keys = await this.redis.keys('*categories*');
+    if (keys.length > 0) {
+      await this.redis.del(keys);
+    }
+    await this.categoryRepository
+      .createQueryBuilder('category')
+      .softDelete()
+      .where({ id: body.id, projectId: body.projectId })
+      .execute();
   }
 }

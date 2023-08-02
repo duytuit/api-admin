@@ -20,7 +20,7 @@ export class Receipt extends BaseEntity {
     length: 500,
   })
   @IsString()
-  receitpCode: string;
+  receiptCode: string;
 
   /* Description */
   @Column({

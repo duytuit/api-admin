@@ -1,7 +1,13 @@
 import { Type } from 'class-transformer';
 import { IsNumber, IsOptional, IsString, isNumber } from 'class-validator';
 import { BaseEntity } from 'src/common/entities/base.entity';
-import { Column, Double, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Double,
+  Entity,
+  PrimaryGeneratedColumn,
+  Timestamp,
+} from 'typeorm';
 @Entity()
 export class Customer extends BaseEntity {
   @PrimaryGeneratedColumn({
@@ -144,6 +150,17 @@ export class Customer extends BaseEntity {
   @IsString()
   @IsOptional()
   identityCard: string;
+
+  /* Travel Date */
+  @Column({
+    name: 'travel_date',
+    comment: 'Ngày xuất cảnh',
+    default: null,
+    type: 'timestamp',
+  })
+  @IsString()
+  @IsOptional()
+  travelDate: Date;
 
   /* Type */
   @Column({

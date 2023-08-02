@@ -6,6 +6,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PaginatedDto } from 'src/common/dto/paginated.dto';
 import Redis from 'ioredis';
 import { InjectRedis } from '@nestjs-modules/ioredis';
+import { ReqChangeStatusDto } from 'src/common/dto/params.dto';
+import { Helper } from 'src/common/utils/helper';
 
 @Injectable()
 export class ProductsService {
@@ -16,7 +18,28 @@ export class ProductsService {
     private readonly redis: Redis,
   ) {}
   async addOrUpdate(CreateProductDto: CreateProductDto) {
+    const keys = await this.redis.keys('*product*');
+    if (keys.length > 0) {
+      await this.redis.del(keys);
+    }
     return await this.productRepository.save(CreateProductDto);
+  }
+  async changeStatus(
+    reqChangeStatusDto: ReqChangeStatusDto,
+    updateBy?: string,
+  ) {
+    const keys = await this.redis.keys('*product*');
+    if (keys.length > 0) {
+      await this.redis.del(keys);
+    }
+    await this.productRepository
+      .createQueryBuilder('product')
+      .update()
+      .set({
+        status: reqChangeStatusDto.status,
+      })
+      .where({ id: reqChangeStatusDto.id })
+      .execute();
   }
   async findByLink(name: string) {
     const where: FindOptionsWhere<Product> = {};
@@ -32,14 +55,17 @@ export class ProductsService {
     const rs_list = await this.redis.get('product' + req.originalUrl);
     if (!rs_list) {
       const where: FindOptionsWhere<Product> = {};
-      // if (reqProductList.name) {
-      //   where.name = Like(`%${reqProductList.name}%`);
-      // }
+      if (reqProductList.name) {
+        where.name = Like(`%${reqProductList.name}%`);
+      }
       if (reqProductList.projectId) {
         where.projectId = reqProductList.projectId;
       }
       if (reqProductList.categoryId) {
         where.categoryId = reqProductList.categoryId;
+      }
+      if (Helper.isNumeric(reqProductList.id)) {
+        where.id = parseInt(reqProductList.id);
       }
       const result = await this.productRepository.findAndCount({
         where,
@@ -69,7 +95,15 @@ export class ProductsService {
     return await this.productRepository.findOneBy({ id });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  async remove(body: any) {
+    const keys = await this.redis.keys('*product*');
+    if (keys.length > 0) {
+      await this.redis.del(keys);
+    }
+    await this.productRepository
+      .createQueryBuilder('category')
+      .softDelete()
+      .where({ id: body.id, projectId: body.projectId })
+      .execute();
   }
 }

@@ -6,7 +6,12 @@ import { Type } from 'class-transformer';
 
 export class CreateProductDto extends OmitType(Product, ['id'] as const) {}
 export class UpdateProductDto extends Product {}
+
 export class ReqProductList extends PaginationDto {
+  /* ID */
+  @IsOptional()
+  @IsString()
+  id: string;
   /* Tiêu đề quảng cáo */
   @IsOptional()
   @IsString()

@@ -7,6 +7,10 @@ import { Type } from 'class-transformer';
 export class CreateServiceDto extends OmitType(Service, ['id'] as const) {}
 export class UpdateServiceDto extends Service {}
 export class ReqServiceList extends PaginationDto {
+  /* ID */
+  @IsOptional()
+  @IsString()
+  id: string;
   /* Tiêu đề quảng cáo */
   @IsOptional()
   @IsString()

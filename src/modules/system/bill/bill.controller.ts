@@ -6,36 +6,41 @@ import {
   Patch,
   Param,
   Delete,
+  Req,
+  Query,
 } from '@nestjs/common';
 import { BillService } from './bill.service';
-import { CreateBillDto, UpdateBillDto } from './dto/req-bill.dto';
+import { CreateBillDto, ReqBillList, UpdateBillDto } from './dto/req-bill.dto';
+import { Bill } from './entities/bill.entity';
+import { ReqChangeStatusDto } from 'src/common/dto/params.dto';
+import { PaginationPipe } from 'src/common/pipes/pagination.pipe';
+import { ApiPaginatedResponse } from 'src/common/decorators/api-paginated-response.decorator';
 
-@Controller('bill')
+@Controller('system/bill')
 export class BillController {
   constructor(private readonly billService: BillService) {}
 
-  @Post()
-  create(@Body() createBillDto: CreateBillDto) {
-    return this.billService.create(createBillDto);
+  @Post('create')
+  async create(@Body() CreateServiceDto: CreateBillDto) {
+    return this.billService.addOrUpdate(CreateServiceDto);
+  }
+  @Post('update')
+  async update(@Body() UpdateServiceDto: UpdateBillDto) {
+    return this.billService.addOrUpdate(UpdateServiceDto);
   }
 
-  @Get()
-  findAll() {
-    return this.billService.findAll();
+  @Get('list')
+  @ApiPaginatedResponse(Bill)
+  async findAll(@Req() req, @Query(PaginationPipe) ReqBillList: ReqBillList) {
+    return await this.billService.list(req, ReqBillList);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.billService.findOne(+id);
+  @Post('update/status')
+  updateStatus(@Body() ReqChangeStatusDto: ReqChangeStatusDto) {
+    return this.billService.changeStatus(ReqChangeStatusDto);
   }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBillDto: UpdateBillDto) {
-    return this.billService.update(+id, updateBillDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.billService.remove(+id);
+  @Post('delete')
+  remove(@Req() req, @Body() body: any) {
+    return this.billService.remove(body);
   }
 }

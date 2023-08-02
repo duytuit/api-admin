@@ -12,7 +12,6 @@ import { CategoriesService } from './categories.service';
 import {
   CreateCategoryDto,
   ReqCategoryList,
-  ReqChangStatusDto,
   UpdateCategoryDto,
 } from './dto/req-category.dto';
 import { Public } from 'src/common/decorators/public.decorator';
@@ -22,6 +21,7 @@ import { PaginationPipe } from 'src/common/pipes/pagination.pipe';
 import { InjectRedis, Redis } from '@nestjs-modules/ioredis';
 import { DataObj } from 'src/common/class/data-obj.class';
 import { COUNTRIES } from 'src/common/utils/country';
+import { ReqChangeStatusDto } from 'src/common/dto/params.dto';
 
 @Controller('system/categories')
 @Public()
@@ -40,10 +40,6 @@ export class CategoriesController {
   update(@Body() updateCategoryDto: UpdateCategoryDto) {
     return this.categoriesService.addOrUpdate(updateCategoryDto);
   }
-  @Post('update/status')
-  updateStatus(@Body() ReqChangStatusDto: ReqChangStatusDto) {
-    return this.categoriesService.changeStatus(ReqChangStatusDto);
-  }
   @Get('list')
   @ApiPaginatedResponse(Category)
   async findAll(
@@ -57,10 +53,14 @@ export class CategoriesController {
   findOne(@Param('id') id: string) {
     // return this.categoriesService.findOne(+id);
   }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.categoriesService.remove(+id);
+  @Post('update/status')
+  updateStatus(@Body() ReqChangeStatusDto: ReqChangeStatusDto) {
+    return this.categoriesService.changeStatus(ReqChangeStatusDto);
+  }
+  @Post('delete')
+  remove(@Req() req, @Body() body: any) {
+    // console.log(body);
+    return this.categoriesService.remove(body);
   }
 
   @Get('update/country')

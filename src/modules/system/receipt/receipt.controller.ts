@@ -6,36 +6,48 @@ import {
   Patch,
   Param,
   Delete,
+  Req,
+  Query,
 } from '@nestjs/common';
 import { ReceiptService } from './receipt.service';
-import { CreateReceiptDto, UpdateReceiptDto } from './dto/req-receipt.dto';
+import {
+  CreateReceiptDto,
+  ReqReceiptList,
+  UpdateReceiptDto,
+} from './dto/req-receipt.dto';
+import { Receipt } from './entities/receipt.entity';
+import { ReqChangeStatusDto } from 'src/common/dto/params.dto';
+import { ApiPaginatedResponse } from 'src/common/decorators/api-paginated-response.decorator';
+import { PaginationPipe } from 'src/common/pipes/pagination.pipe';
 
-@Controller('receipt')
+@Controller('system/receipt')
 export class ReceiptController {
   constructor(private readonly receiptService: ReceiptService) {}
 
-  @Post()
-  create(@Body() createReceiptDto: CreateReceiptDto) {
-    return this.receiptService.create(createReceiptDto);
+  @Post('create')
+  async create(@Body() CreateServiceDto: CreateReceiptDto) {
+    return this.receiptService.addOrUpdate(CreateServiceDto);
+  }
+  @Post('update')
+  async update(@Body() UpdateServiceDto: UpdateReceiptDto) {
+    return this.receiptService.addOrUpdate(UpdateServiceDto);
   }
 
-  @Get()
-  findAll() {
-    return this.receiptService.findAll();
+  @Get('list')
+  @ApiPaginatedResponse(Receipt)
+  async findAll(
+    @Req() req,
+    @Query(PaginationPipe) ReqReceiptList: ReqReceiptList,
+  ) {
+    return await this.receiptService.list(req, ReqReceiptList);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.receiptService.findOne(+id);
+  @Post('update/status')
+  updateStatus(@Body() ReqChangeStatusDto: ReqChangeStatusDto) {
+    return this.receiptService.changeStatus(ReqChangeStatusDto);
   }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateReceiptDto: UpdateReceiptDto) {
-    return this.receiptService.update(+id, updateReceiptDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.receiptService.remove(+id);
+  @Post('delete')
+  remove(@Req() req, @Body() body: any) {
+    return this.receiptService.remove(body);
   }
 }
