@@ -17,6 +17,11 @@ export class ReqCategoryList extends PaginationDto {
   @IsString()
   name: string;
 
+  /* Thuộc tính */
+  @IsOptional()
+  @IsString()
+  option: string;
+
   @IsNumber()
   @Type()
   projectId: number;

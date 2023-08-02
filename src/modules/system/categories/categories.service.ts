@@ -59,6 +59,9 @@ export class CategoriesService {
       if (Helper.isNumeric(reqCategoryList.id)) {
         where.id = parseInt(reqCategoryList.id);
       }
+      if (reqCategoryList.option) {
+        where.status = 0;
+      }
       // where.status = 0;
       const result = await this.categoryRepository.findAndCount({
         where,
