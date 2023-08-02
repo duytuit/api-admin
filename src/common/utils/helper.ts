@@ -118,4 +118,17 @@ export class Helper {
       return accumulator + object[_column];
     }, 0);
   }
+  static _isString(e: any) {
+    switch (e) {
+      case '':
+      // case 0:
+      // case "0":
+      case null:
+      case false:
+      case undefined:
+        return true;
+      default:
+        return false;
+    }
+  }
 }

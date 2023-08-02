@@ -55,7 +55,7 @@ export class ProductsService {
     const rs_list = await this.redis.get('product' + req.originalUrl);
     if (!rs_list) {
       const where: FindOptionsWhere<Product> = {};
-      if (reqProductList.name) {
+      if (Helper._isString(reqProductList.name)) {
         where.name = Like(`%${reqProductList.name}%`);
       }
       if (reqProductList.projectId) {
