@@ -59,6 +59,7 @@ export class Category extends BaseEntity {
   @Column({
     name: 'type',
     comment: 'kiểu danh mục',
+    default: null,
   })
   @Type()
   @IsNumber()
@@ -72,6 +73,7 @@ export class Category extends BaseEntity {
     default: null,
   })
   @IsString()
+  @IsOptional()
   image: string;
 
   /* Project Id */
