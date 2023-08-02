@@ -12,6 +12,7 @@ import { FindOptionsWhere, Like, Repository } from 'typeorm';
 import { InjectRedis, Redis } from '@nestjs-modules/ioredis';
 import { PaginatedDto } from 'src/common/dto/paginated.dto';
 import { Helper } from 'src/common/utils/helper';
+import { LogDebug } from 'src/common/debugLog';
 
 @Injectable()
 export class CategoriesService {
@@ -22,6 +23,10 @@ export class CategoriesService {
     private readonly categoryRepository: Repository<Category>,
   ) {}
   async addOrUpdate(CreateCategoryDto: CreateCategoryDto) {
+    const keys = await this.redis.keys('*categories*');
+    if (keys.length > 0) {
+      await this.redis.del(keys);
+    }
     return await this.categoryRepository.save(CreateCategoryDto);
   }
 
