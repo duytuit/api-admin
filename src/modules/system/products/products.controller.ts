@@ -43,11 +43,6 @@ export class ProductsController {
   ) {
     return await this.productsService.list(req, ReqProductList);
   }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productsService.findOne(+id);
-  }
   @Post('update/status')
   updateStatus(@Body() ReqChangeStatusDto: ReqChangeStatusDto) {
     return this.productsService.changeStatus(ReqChangeStatusDto);
@@ -56,5 +51,9 @@ export class ProductsController {
   remove(@Req() req, @Body() body: any) {
     // console.log(body);
     return this.productsService.remove(body);
+  }
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.productsService.findOne(+id);
   }
 }

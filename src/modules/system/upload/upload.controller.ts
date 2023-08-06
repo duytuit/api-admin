@@ -27,10 +27,10 @@ export class UploadController {
   @UseInterceptors(FilesInterceptor('files'))
   @Post('create')
   async create(
-    @Body('path_file') path_file: string,
+    @Body() body: any,
     @UploadedFiles() files?: Array<Express.Multer.File>,
   ) {
-    return await this.uploadService.add(files, path_file);
+    return await this.uploadService.add(files, body);
   }
 
   @Get()

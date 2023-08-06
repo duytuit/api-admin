@@ -17,7 +17,7 @@ export class UploadService {
   ) {}
   async add(
     files?: Array<Express.Multer.File>,
-    path_file?: string,
+    body?: any,
     folder?: string,
     gettime?: boolean,
   ): Promise<any[]> {
@@ -45,6 +45,7 @@ export class UploadService {
             upload.fileOriginalName = item.originalname;
             upload.type = item.mimetype;
             upload.fileSize = item.size;
+            upload.projectId = body?.projectId;
             upload.sort = 1;
             upload.extension = mime.extension(item.mimetype);
             return await this.uploadRepository.save(upload);
@@ -53,14 +54,14 @@ export class UploadService {
         upload_arr.push(...data_upload);
       }
     }
-    if (path_file) {
+    if (body.path_file) {
       const url = folder
         ? gettime
-          ? `${process.env.UPLOAD_CDN}common/upload/path?fileUrl=${path_file}&folder=${folder}&gettime=${gettime}`
-          : `${process.env.UPLOAD_CDN}common/upload/path?fileUrl=${path_file}&folder=${folder}`
+          ? `${process.env.UPLOAD_CDN}common/upload/path?fileUrl=${body.path_file}&folder=${folder}&gettime=${gettime}`
+          : `${process.env.UPLOAD_CDN}common/upload/path?fileUrl=${body.path_file}&folder=${folder}`
         : gettime
-        ? `${process.env.UPLOAD_CDN}common/upload/path?fileUrl=${path_file}&gettime=${gettime}`
-        : `${process.env.UPLOAD_CDN}common/upload/path?fileUrl=${path_file}`;
+        ? `${process.env.UPLOAD_CDN}common/upload/path?fileUrl=${body.path_file}&gettime=${gettime}`
+        : `${process.env.UPLOAD_CDN}common/upload/path?fileUrl=${body.path_file}`;
       const result: any = await axios.get(url);
 
       if ((result.code = 200)) {

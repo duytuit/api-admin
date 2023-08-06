@@ -1,7 +1,6 @@
 /*
 https://docs.nestjs.com/controllers#controllers
 */
-
 import {
   Body,
   Controller,
@@ -11,6 +10,7 @@ import {
   Post,
   Put,
   Query,
+  Req,
   StreamableFile,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
@@ -19,7 +19,11 @@ import { User, UserEnum } from 'src/common/decorators/user.decorator';
 import { ApiException } from 'src/common/exceptions/api.exception';
 import { PaginationPipe } from 'src/common/pipes/pagination.pipe';
 import { UserInfoPipe } from 'src/common/pipes/user-info.pipe';
-import { ReqAddPostDto, ReqPostListDto } from './dto/req-post.dto';
+import {
+  ReqAddPostDto,
+  ReqPostListDto,
+  UpdatePostDto,
+} from './dto/req-post.dto';
 import { PostService } from './post.service';
 import { Post as SysPost } from './entities/post.entity';
 import {
@@ -32,6 +36,7 @@ import { ExcelService } from 'src/modules/common/excel/excel.service';
 import { BusinessTypeEnum, Log } from 'src/common/decorators/log.decorator';
 import { RequiresPermissions } from 'src/common/decorators/requires-permissions.decorator';
 import { RepeatSubmit } from 'src/common/decorators/repeat-submit.decorator';
+import { ReqChangeStatusDto } from 'src/common/dto/params.dto';
 
 @ApiTags('Quản lý bài')
 @Controller('system/post')
@@ -118,5 +123,32 @@ export class PostController {
     const { rows } = await this.postService.list(reqPostListDto);
     const file = await this.excelService.export(SysPost, rows);
     return new StreamableFile(file);
+  }
+
+  // ==========================v2================================
+  @Post('create')
+  create(@Body() ReqAddPostDto: ReqAddPostDto) {
+    return this.postService.addOrUpdate(ReqAddPostDto);
+  }
+  @Post('update')
+  update_v2(@Body() UpdatePostDto: UpdatePostDto) {
+    return this.postService.addOrUpdate(UpdatePostDto);
+  }
+  @Get('list')
+  @ApiPaginatedResponse(SysPost)
+  async findAll(
+    @Req() req,
+    @Query(PaginationPipe) ReqPostListDto: ReqPostListDto,
+  ) {
+    return await this.postService.list_v2(req, ReqPostListDto);
+  }
+  @Post('update/status')
+  updateStatus(@Body() ReqChangeStatusDto: ReqChangeStatusDto) {
+    return this.postService.changeStatus(ReqChangeStatusDto);
+  }
+  @Post('delete')
+  remove(@Req() req, @Body() body: any) {
+    // console.log(body);
+    return this.postService.remove(body);
   }
 }

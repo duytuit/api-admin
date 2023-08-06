@@ -22,6 +22,8 @@ import { InjectRedis, Redis } from '@nestjs-modules/ioredis';
 import { DataObj } from 'src/common/class/data-obj.class';
 import { COUNTRIES } from 'src/common/utils/country';
 import { ReqChangeStatusDto } from 'src/common/dto/params.dto';
+import { User, UserEnum } from 'src/common/decorators/user.decorator';
+import { UserInfoPipe } from 'src/common/pipes/user-info.pipe';
 
 @Controller('system/categories')
 @Public()
@@ -33,7 +35,10 @@ export class CategoriesController {
   ) {}
 
   @Post('create')
-  create(@Body() createCategoryDto: CreateCategoryDto) {
+  create(
+    @Body() createCategoryDto: CreateCategoryDto,
+    @User(UserEnum.userName, UserInfoPipe) userName: string,
+  ) {
     return this.categoriesService.addOrUpdate(createCategoryDto);
   }
   @Post('update')

@@ -8,11 +8,16 @@ import { PaginatedDto } from 'src/common/dto/paginated.dto';
 import { FindOptionsWhere, In, Like, Repository } from 'typeorm';
 import { ReqAddPostDto, ReqPostListDto } from './dto/req-post.dto';
 import { Post } from './entities/post.entity';
+import { ReqChangeStatusDto } from 'src/common/dto/params.dto';
+import { InjectRedis, Redis } from '@nestjs-modules/ioredis';
+import { Helper } from 'src/common/utils/helper';
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectRepository(Post) private readonly postRepository: Repository<Post>,
+    @InjectRedis()
+    private readonly redis: Redis,
   ) {}
 
   /* Yêu cầu thông qua mã hóa công việc */
@@ -79,5 +84,82 @@ export class PostService {
         postId: In(idArr),
       },
     });
+  }
+  async addOrUpdate_v2(ReqAddPostDto: ReqAddPostDto) {
+    const keys = await this.redis.keys('*post*');
+    if (keys.length > 0) {
+      await this.redis.del(keys);
+    }
+    return await this.postRepository.save(ReqAddPostDto);
+  }
+  async changeStatus(
+    reqChangeStatusDto: ReqChangeStatusDto,
+    updateBy?: string,
+  ) {
+    const keys = await this.redis.keys('*Post*');
+    if (keys.length > 0) {
+      await this.redis.del(keys);
+    }
+    await this.postRepository
+      .createQueryBuilder('Post')
+      .update()
+      .set({
+        status: reqChangeStatusDto.status,
+      })
+      .where({ id: reqChangeStatusDto.id })
+      .execute();
+  }
+
+  async list_v2(
+    req,
+    ReqPostListDto: ReqPostListDto,
+  ): Promise<PaginatedDto<Post>> {
+    const rs_list = await this.redis.get('Post' + req.originalUrl);
+    if (!rs_list) {
+      const where: FindOptionsWhere<Post> = {};
+      if (ReqPostListDto.name && Helper._isString(ReqPostListDto.name)) {
+        where.name = Like(`%${ReqPostListDto.name}%`);
+      }
+      if (ReqPostListDto.projectId) {
+        where.projectId = ReqPostListDto.projectId;
+      }
+      if (ReqPostListDto.categoryId) {
+        where.categoryId = ReqPostListDto.categoryId;
+      }
+      if (Helper.isNumeric(ReqPostListDto.postId)) {
+        where.postId = parseInt(ReqPostListDto.postId);
+      }
+      const result = await this.postRepository.findAndCount({
+        where,
+        order: {
+          postId: 'DESC',
+        },
+        skip: ReqPostListDto.skip,
+        take: ReqPostListDto.take,
+      });
+      const rs_list = {
+        rows: result[0],
+        total: result[1],
+      };
+      await this.redis.set(
+        'Post' + req.originalUrl,
+        JSON.stringify(rs_list),
+        'EX',
+        process.env.TIME_EXPIRE_REDIS || 60,
+      );
+      return rs_list;
+    }
+    return rs_list ? JSON.parse(rs_list) : null;
+  }
+  async remove(body: any) {
+    const keys = await this.redis.keys('*post*');
+    if (keys.length > 0) {
+      await this.redis.del(keys);
+    }
+    await this.postRepository
+      .createQueryBuilder('post')
+      .softDelete()
+      .where({ id: body.id, projectId: body.projectId })
+      .execute();
   }
 }

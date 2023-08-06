@@ -104,7 +104,7 @@ export class ProductsService {
       await this.redis.del(keys);
     }
     await this.productRepository
-      .createQueryBuilder('category')
+      .createQueryBuilder('product')
       .softDelete()
       .where({ id: body.id, projectId: body.projectId })
       .execute();
