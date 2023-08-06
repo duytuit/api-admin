@@ -8,7 +8,10 @@ import { PaginatedDto } from 'src/common/dto/paginated.dto';
 import { FindOptionsWhere, In, Like, Repository } from 'typeorm';
 import { ReqAddPostDto, ReqPostListDto } from './dto/req-post.dto';
 import { Post } from './entities/post.entity';
-import { ReqChangeStatusDto } from 'src/common/dto/params.dto';
+import {
+  ReqChangeSlugDto,
+  ReqChangeStatusDto,
+} from 'src/common/dto/params.dto';
 import { InjectRedis, Redis } from '@nestjs-modules/ioredis';
 import { Helper } from 'src/common/utils/helper';
 
@@ -27,6 +30,13 @@ export class PostService {
 
   /* Thêm hoặc biên tập viên */
   async addOrUpdate(reqAddPostDto: ReqAddPostDto) {
+    const keys = await this.redis.keys('*post*');
+    if (keys.length > 0) {
+      await this.redis.del(keys);
+    }
+    reqAddPostDto.slug = Helper.convertToSlug(
+      Helper.toLowerCaseNonAccentVietnamese(reqAddPostDto.slug),
+    );
     await this.postRepository.save(reqAddPostDto);
   }
 
@@ -110,6 +120,23 @@ export class PostService {
       .execute();
   }
 
+  async changeSlug(ReqChangeSlugDto: ReqChangeSlugDto, updateBy?: string) {
+    const keys = await this.redis.keys('*post*');
+    if (keys.length > 0) {
+      await this.redis.del(keys);
+    }
+    await this.postRepository
+      .createQueryBuilder('post')
+      .update()
+      .set({
+        slug: Helper.convertToSlug(
+          Helper.toLowerCaseNonAccentVietnamese(ReqChangeSlugDto.slug),
+        ),
+      })
+      .where({ id: ReqChangeSlugDto.id })
+      .execute();
+  }
+
   async list_v2(
     req,
     ReqPostListDto: ReqPostListDto,
@@ -117,7 +144,7 @@ export class PostService {
     const rs_list = await this.redis.get('post' + req.originalUrl);
     if (!rs_list) {
       const where: FindOptionsWhere<Post> = {};
-      if (ReqPostListDto.name && Helper._isString(ReqPostListDto.name)) {
+      if (ReqPostListDto.name) {
         where.name = Like(`%${ReqPostListDto.name}%`);
       }
       if (ReqPostListDto.projectId) {

@@ -33,3 +33,15 @@ export class ReqChangeStatusDto {
   @IsNumber()
   status: number;
 }
+
+export class ReqChangeSlugDto {
+  /* Id danh mục*/
+  @Type()
+  @IsNumber()
+  id: number;
+
+  /* Trạng thái */
+  @Type()
+  @IsString()
+  slug: string;
+}

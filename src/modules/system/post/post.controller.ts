@@ -36,7 +36,10 @@ import { ExcelService } from 'src/modules/common/excel/excel.service';
 import { BusinessTypeEnum, Log } from 'src/common/decorators/log.decorator';
 import { RequiresPermissions } from 'src/common/decorators/requires-permissions.decorator';
 import { RepeatSubmit } from 'src/common/decorators/repeat-submit.decorator';
-import { ReqChangeStatusDto } from 'src/common/dto/params.dto';
+import {
+  ReqChangeSlugDto,
+  ReqChangeStatusDto,
+} from 'src/common/dto/params.dto';
 
 @ApiTags('Quản lý bài')
 @Controller('system/post')
@@ -147,6 +150,10 @@ export class PostController {
   @Post('update/status')
   updateStatus(@Body() ReqChangeStatusDto: ReqChangeStatusDto) {
     return this.postService.changeStatus(ReqChangeStatusDto);
+  }
+  @Post('update/slug')
+  updateSlug(@Body() ReqChangeSlugDto: ReqChangeSlugDto) {
+    return this.postService.changeSlug(ReqChangeSlugDto);
   }
   @Post('delete')
   remove(@Req() req, @Body() body: any) {
