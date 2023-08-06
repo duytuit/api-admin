@@ -5,7 +5,7 @@ import { Post } from '../entities/post.entity';
 import { Type } from 'class-transformer';
 
 /* Bài viết */
-export class ReqAddPostDto extends OmitType(Post, ['postId'] as const) {}
+export class ReqAddPostDto extends OmitType(Post, ['id'] as const) {}
 
 export class UpdatePostDto extends Post {}
 

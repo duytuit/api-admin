@@ -44,7 +44,7 @@ export class PostService {
     }
     const result = await this.postRepository.findAndCount({
       select: [
-        'postId',
+        'id',
         'postCode',
         'postName',
         'createTime',
@@ -68,8 +68,8 @@ export class PostService {
   }
 
   /* Tìm thông qua ID */
-  async findById(postId: number) {
-    return await this.postRepository.findOneBy({ postId });
+  async findById(id: number) {
+    return await this.postRepository.findOneBy({ id });
   }
 
   /* Thông qua mảng id xoá */
@@ -81,7 +81,7 @@ export class PostService {
   async listByIdArr(idArr: number[]) {
     return this.postRepository.find({
       where: {
-        postId: In(idArr),
+        id: In(idArr),
       },
     });
   }
@@ -130,7 +130,7 @@ export class PostService {
       const result = await this.postRepository.findAndCount({
         where,
         order: {
-          postId: 'DESC',
+          id: 'DESC',
         },
         skip: ReqPostListDto.skip,
         take: ReqPostListDto.take,

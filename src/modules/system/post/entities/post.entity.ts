@@ -10,7 +10,7 @@ import { User } from '../../user/entities/user.entity';
 export class Post extends BaseEntity {
   /* post ID */
   @PrimaryGeneratedColumn({
-    name: 'post_id',
+    name: 'id',
     comment: 'post ID',
   })
   @Type()
@@ -18,16 +18,17 @@ export class Post extends BaseEntity {
   @Excel({
     name: 'Đăng ID',
   })
-  postId: number;
+  id: number;
 
   /* Mã bài viết */
   @Column({
-    unique: true,
     name: 'post_code',
     comment: 'Mã bài viết',
     length: 64,
+    default: null,
   })
   @IsString()
+  @IsOptional()
   @Excel({
     name: 'Mã bài viết',
   })
@@ -38,8 +39,10 @@ export class Post extends BaseEntity {
     name: 'post_name',
     comment: 'Tên vị trí',
     length: 50,
+    default: null,
   })
   @IsString()
+  @IsOptional()
   @Excel({
     name: 'Tên vị trí',
   })
@@ -109,9 +112,9 @@ export class Post extends BaseEntity {
     comment: 'is_picked',
     default: null,
   })
-  @IsString()
+  @IsNumber()
   @IsOptional()
-  is_picked: string;
+  is_picked: number;
 
   /* need_auth */
   @Column({
@@ -119,9 +122,9 @@ export class Post extends BaseEntity {
     comment: 'need_auth',
     default: null,
   })
-  @IsString()
+  @IsNumber()
   @IsOptional()
-  need_auth: string;
+  need_auth: number;
 
   /* Category Id */
   @Column({
@@ -173,7 +176,9 @@ export class Post extends BaseEntity {
     type: 'tinyint',
     default: 0,
   })
-  @IsString()
+  @Type()
+  @IsNumber()
+  @IsOptional()
   @Excel({
     name: 'Trạng thái',
     dictType: 'sys_normal_disable',
