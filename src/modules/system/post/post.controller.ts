@@ -66,11 +66,13 @@ export class PostController {
   }
 
   /* Danh sách bài đăng truy vấn Pagling */
-  @Get('list')
+  @Get('v1/list')
   @RequiresPermissions('system:post:query')
   @ApiPaginatedResponse(SysPost)
   async list(@Query(PaginationPipe) reqPostListDto: ReqPostListDto) {
-    return this.postService.list(reqPostListDto);
+    console.log('sdfsdfds');
+
+    // return this.postService.list(reqPostListDto);
   }
 
   /* Kiểm tra bài viết qua ID */
@@ -134,7 +136,7 @@ export class PostController {
   update_v2(@Body() UpdatePostDto: UpdatePostDto) {
     return this.postService.addOrUpdate(UpdatePostDto);
   }
-  @Get('list')
+  @Get('v2/list')
   @ApiPaginatedResponse(SysPost)
   async findAll(
     @Req() req,

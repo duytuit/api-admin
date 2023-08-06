@@ -96,12 +96,12 @@ export class PostService {
     reqChangeStatusDto: ReqChangeStatusDto,
     updateBy?: string,
   ) {
-    const keys = await this.redis.keys('*Post*');
+    const keys = await this.redis.keys('*post*');
     if (keys.length > 0) {
       await this.redis.del(keys);
     }
     await this.postRepository
-      .createQueryBuilder('Post')
+      .createQueryBuilder('post')
       .update()
       .set({
         status: reqChangeStatusDto.status,
@@ -114,7 +114,7 @@ export class PostService {
     req,
     ReqPostListDto: ReqPostListDto,
   ): Promise<PaginatedDto<Post>> {
-    const rs_list = await this.redis.get('Post' + req.originalUrl);
+    const rs_list = await this.redis.get('post' + req.originalUrl);
     if (!rs_list) {
       const where: FindOptionsWhere<Post> = {};
       if (ReqPostListDto.name && Helper._isString(ReqPostListDto.name)) {
@@ -126,9 +126,7 @@ export class PostService {
       if (ReqPostListDto.categoryId) {
         where.categoryId = ReqPostListDto.categoryId;
       }
-      if (Helper.isNumeric(ReqPostListDto.postId)) {
-        where.postId = parseInt(ReqPostListDto.postId);
-      }
+
       const result = await this.postRepository.findAndCount({
         where,
         order: {
@@ -142,7 +140,7 @@ export class PostService {
         total: result[1],
       };
       await this.redis.set(
-        'Post' + req.originalUrl,
+        'post' + req.originalUrl,
         JSON.stringify(rs_list),
         'EX',
         process.env.TIME_EXPIRE_REDIS || 60,

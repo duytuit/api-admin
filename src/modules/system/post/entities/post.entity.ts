@@ -170,8 +170,8 @@ export class Post extends BaseEntity {
   @Column({
     name: 'status',
     comment: 'Trạng thái（0 bình thường 1 vô hiệu hóa)',
-    length: 1,
-    type: 'char',
+    type: 'tinyint',
+    default: 0,
   })
   @IsString()
   @Excel({
