@@ -10,3 +10,8 @@ export enum ProductEnum {
 export enum CustomerEnum {
   visa = 1,
 }
+
+export enum CategoryEnum {
+  visa = 1,
+  post = 2,
+}

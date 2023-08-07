@@ -25,4 +25,8 @@ export class ReqCategoryList extends PaginationDto {
   @IsNumber()
   @Type()
   projectId: number;
+
+  @IsNumber()
+  @Type()
+  type: number;
 }

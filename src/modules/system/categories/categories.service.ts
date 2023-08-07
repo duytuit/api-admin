@@ -62,6 +62,9 @@ export class CategoriesService {
       if (reqCategoryList.option) {
         where.status = 0;
       }
+      if (reqCategoryList.type) {
+        where.type = reqCategoryList.type;
+      }
       // where.status = 0;
       const result = await this.categoryRepository.findAndCount({
         where,

@@ -63,7 +63,6 @@ export class Category extends BaseEntity {
   })
   @Type()
   @IsNumber()
-  @IsOptional()
   type: number;
 
   /* Image */
