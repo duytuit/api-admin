@@ -12,6 +12,6 @@ export enum CustomerEnum {
 }
 
 export enum CategoryEnum {
-  visa = 1,
+  country = 1,
   post = 2,
 }
