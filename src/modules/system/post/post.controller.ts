@@ -1,3 +1,4 @@
+import { Public } from 'src/common/decorators/public.decorator';
 /*
 https://docs.nestjs.com/controllers#controllers
 */
@@ -142,6 +143,15 @@ export class PostController {
   @Get('v2/list')
   @ApiPaginatedResponse(SysPost)
   async findAll(
+    @Req() req,
+    @Query(PaginationPipe) ReqPostListDto: ReqPostListDto,
+  ) {
+    return await this.postService.list_v2(req, ReqPostListDto);
+  }
+  @Get('blog/v2/list')
+  @Public()
+  @ApiPaginatedResponse(SysPost)
+  async blogfindAll(
     @Req() req,
     @Query(PaginationPipe) ReqPostListDto: ReqPostListDto,
   ) {

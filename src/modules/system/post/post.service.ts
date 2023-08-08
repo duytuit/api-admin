@@ -142,6 +142,8 @@ export class PostService {
     ReqPostListDto: ReqPostListDto,
   ): Promise<PaginatedDto<Post>> {
     const rs_list = await this.redis.get('post' + req.originalUrl);
+    console.log(ReqPostListDto);
+
     if (!rs_list) {
       const where: FindOptionsWhere<Post> = {};
       if (ReqPostListDto.name) {
@@ -153,7 +155,9 @@ export class PostService {
       if (ReqPostListDto.categoryId) {
         where.categoryId = ReqPostListDto.categoryId;
       }
-
+      if (Helper.isNumeric(ReqPostListDto.id)) {
+        where.id = parseInt(ReqPostListDto.id);
+      }
       const result = await this.postRepository.findAndCount({
         where,
         order: {

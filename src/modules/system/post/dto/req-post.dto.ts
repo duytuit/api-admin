@@ -14,7 +14,7 @@ export class ReqPostListDto extends PaginationDto {
   /* ID */
   @IsOptional()
   @IsString()
-  postId: string;
+  id: string;
   /* Mã bài viết */
   @IsOptional()
   @IsString()
