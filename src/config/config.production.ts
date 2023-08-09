@@ -18,7 +18,7 @@ export default defineConfig({
     type: 'mysql',
     host: process.env.MYSQL_HOST || 'localhost',
     port: process.env.MYSQL_PORT || 3306,
-    username: process.env.MYSQL_USERNAME || 'duytuit',
+    username: process.env.MYSQL_USERNAME || 'dev',
     password: process.env.MYSQL_PASSWORD || 'Duytuit89!',
     database: process.env.MYSQL_DATABASE || 'cms_admin',
     autoLoadModels: true,
