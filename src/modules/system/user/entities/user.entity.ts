@@ -182,10 +182,10 @@ export class User extends BaseEntity {
   @ManyToOne(() => Dept, (dept) => dept.users)
   dept: Dept;
 
-  @ApiHideProperty()
-  @ManyToMany(() => Post, (post) => post.users)
-  @JoinTable()
-  posts: Post[];
+  // @ApiHideProperty()
+  // @ManyToMany(() => Post, (post) => post.users)
+  // @JoinTable()
+  // posts: Post[];
 
   @ApiHideProperty()
   @ManyToMany(() => Role, (role) => role.users)
