@@ -145,6 +145,7 @@ export class Post extends BaseEntity {
   })
   @IsNumber()
   @Type()
+  @IsOptional()
   projectId: number;
 
   /* Description */
@@ -162,8 +163,11 @@ export class Post extends BaseEntity {
   @Column({
     name: 'post_sort',
     comment: 'Hiển thị thứ tự',
+    default: 1,
   })
   @IsNumber()
+  @IsOptional()
+  @Type()
   @Excel({
     name: 'Hiển thị thứ tự',
   })

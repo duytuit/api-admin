@@ -6,7 +6,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginatedDto } from 'src/common/dto/paginated.dto';
 import { FindOptionsWhere, In, Like, Repository } from 'typeorm';
-import { ReqAddPostDto, ReqPostListDto } from './dto/req-post.dto';
+import {
+  ReqAddPostDto,
+  ReqCategoryGroupCategory,
+  ReqPostListDto,
+} from './dto/req-post.dto';
 import { Post } from './entities/post.entity';
 import {
   ReqChangeSlugDto,
@@ -37,7 +41,7 @@ export class PostService {
     reqAddPostDto.slug = Helper.convertToSlug(
       Helper.toLowerCaseNonAccentVietnamese(reqAddPostDto.slug),
     );
-    await this.postRepository.save(reqAddPostDto);
+    return await this.postRepository.save(reqAddPostDto);
   }
 
   /* Truy vấn phân trang */
@@ -155,6 +159,9 @@ export class PostService {
       if (ReqPostListDto.categoryId) {
         where.categoryId = ReqPostListDto.categoryId;
       }
+      if (ReqPostListDto.slug) {
+        where.slug = Like(`%${ReqPostListDto.slug}%`);
+      }
       if (Helper.isNumeric(ReqPostListDto.id)) {
         where.id = parseInt(ReqPostListDto.id);
       }
@@ -190,5 +197,34 @@ export class PostService {
       .softDelete()
       .where({ id: body.id, projectId: body.projectId })
       .execute();
+  }
+  async countPostGroupCategory(
+    req,
+    ReqCategoryGroupCategory: ReqCategoryGroupCategory,
+  ) {
+    const rs_list = await this.redis.get('post' + req.originalUrl);
+    if (!rs_list) {
+      const result = await this.postRepository
+        .createQueryBuilder('post')
+        .softDelete()
+        .select('COUNT(post.category_id) as count,post.category_id')
+        .groupBy('post.category_id')
+        .where({
+          projectId: ReqCategoryGroupCategory.projectId,
+        })
+        .execute();
+      console.log(result);
+      const rs_list = {
+        rows: result,
+      };
+      await this.redis.set(
+        'post' + req.originalUrl,
+        JSON.stringify(rs_list),
+        'EX',
+        process.env.TIME_EXPIRE_REDIS || 60,
+      );
+      return rs_list;
+    }
+    return rs_list ? JSON.parse(rs_list) : null;
   }
 }

@@ -8,7 +8,12 @@ import { Type } from 'class-transformer';
 export class ReqAddPostDto extends OmitType(Post, ['id'] as const) {}
 
 export class UpdatePostDto extends Post {}
-
+export class ReqCategoryGroupCategory {
+  /*  Dự án */
+  @Type()
+  @IsNumber()
+  projectId: number;
+}
 /* Truy vấn phân trang */
 export class ReqPostListDto extends PaginationDto {
   /* ID */
@@ -28,6 +33,10 @@ export class ReqPostListDto extends PaginationDto {
   @IsOptional()
   @IsString()
   name: string;
+
+  @IsOptional()
+  @IsString()
+  slug: string;
 
   @IsNumber()
   @Type()

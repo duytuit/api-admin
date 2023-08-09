@@ -22,6 +22,7 @@ import { PaginationPipe } from 'src/common/pipes/pagination.pipe';
 import { UserInfoPipe } from 'src/common/pipes/user-info.pipe';
 import {
   ReqAddPostDto,
+  ReqCategoryGroupCategory,
   ReqPostListDto,
   UpdatePostDto,
 } from './dto/req-post.dto';
@@ -41,13 +42,18 @@ import {
   ReqChangeSlugDto,
   ReqChangeStatusDto,
 } from 'src/common/dto/params.dto';
+import { Tag } from '../tags/entities/tag.entity';
+import { CategoryEnum } from 'src/common/enums/type.enum';
+import { TagsService } from '../tags/tags.service';
 
 @ApiTags('Quản lý bài')
 @Controller('system/post')
+@Public()
 export class PostController {
   constructor(
     private readonly postService: PostService,
     private readonly excelService: ExcelService,
+    private readonly tagsService: TagsService,
   ) {}
 
   /* Thêm岗位 */
@@ -133,8 +139,28 @@ export class PostController {
 
   // ==========================v2================================
   @Post('create')
-  create(@Body() ReqAddPostDto: ReqAddPostDto) {
-    return this.postService.addOrUpdate(ReqAddPostDto);
+  async create(@Body() ReqAddPostDto: ReqAddPostDto) {
+    const post: any = await this.postService.addOrUpdate(ReqAddPostDto);
+    const tags = ReqAddPostDto.tags.split('#');
+    if (post && tags.length > 0) {
+      for (const item of tags) {
+        if (item) {
+          const tag = new Tag();
+          tag.postId = post.id;
+          tag.tag = item;
+          tag.tagSlug = item;
+          tag.type = CategoryEnum.post;
+          tag.projectId = ReqAddPostDto.projectId;
+          // const _tag = await this.tagsService.findByTag(item);
+          // console.log(_tag);
+          // if (!_tag) {
+          //   await this.tagsService.addOrUpdate(tag);
+          // }
+          await this.tagsService.addOrUpdate(tag);
+        }
+      }
+    }
+    return post;
   }
   @Post('update')
   update_v2(@Body() UpdatePostDto: UpdatePostDto) {
@@ -149,13 +175,24 @@ export class PostController {
     return await this.postService.list_v2(req, ReqPostListDto);
   }
   @Get('blog/v2/list')
-  @Public()
   @ApiPaginatedResponse(SysPost)
   async blogfindAll(
     @Req() req,
     @Query(PaginationPipe) ReqPostListDto: ReqPostListDto,
   ) {
     return await this.postService.list_v2(req, ReqPostListDto);
+  }
+  @Get('blog/countPostGroupCategory')
+  @Public()
+  @ApiPaginatedResponse(SysPost)
+  async countPostGroupCategory(
+    @Req() req,
+    @Query(PaginationPipe) ReqCategoryGroupCategory: ReqCategoryGroupCategory,
+  ) {
+    return await this.postService.countPostGroupCategory(
+      req,
+      ReqCategoryGroupCategory,
+    );
   }
   @Post('update/status')
   updateStatus(@Body() ReqChangeStatusDto: ReqChangeStatusDto) {

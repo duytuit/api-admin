@@ -54,6 +54,7 @@ import { WarehouseModule } from './modules/system/warehouse/warehouse.module';
 import { CloneViatorModule } from './modules/system/clone_viator/clone_viator.module';
 import { CurrenciesModule } from './modules/system/currencies/currencies.module';
 import { MailService } from './modules/mail/mail.service';
+import { TagsModule } from './modules/system/tags/tags.module';
 
 /* Sẽ provider Tên lớp，Thuận tiện để gọi hẹn giờ gọi*/
 const providers = [JobService];
@@ -131,6 +132,7 @@ const aliasProviders = createAliasProviders();
     WarehouseModule,
     CloneViatorModule,
     CurrenciesModule,
+    TagsModule,
   ],
   providers: [...aliasProviders, MailService],
 })
