@@ -10,7 +10,7 @@ import { User } from '../../user/entities/user.entity';
 export class Post extends BaseEntity {
   /* post ID */
   @PrimaryGeneratedColumn({
-    name: 'id',
+    name: 'post_id',
     comment: 'post ID',
   })
   @Type()
@@ -18,7 +18,7 @@ export class Post extends BaseEntity {
   @Excel({
     name: 'Đăng ID',
   })
-  id: number;
+  postId: number;
 
   /* Mã bài viết */
   @Column({

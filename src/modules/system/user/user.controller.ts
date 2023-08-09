@@ -152,7 +152,7 @@ export class UserController {
     const roles = await this.roleService.list(new ReqRoleListDto());
     const user = (await this.userService.userAllInfo(userId)) as ResUserDto;
     user.deptId = user.dept ? user.dept.deptId : null;
-    const postIds = user.posts.map((item) => item.id);
+    const postIds = user.posts.map((item) => item.postId);
     const roleIds = user.roles.map((item) => item.roleId);
     user.postIds = [];
     user.roleIds = [];
