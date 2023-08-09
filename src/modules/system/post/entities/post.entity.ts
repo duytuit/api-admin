@@ -189,7 +189,7 @@ export class Post extends BaseEntity {
   })
   status: number;
 
-  // @ApiHideProperty()
-  // @ManyToMany(() => User, (user) => user.posts)
-  // users: User[];
+  @ApiHideProperty()
+  @ManyToMany(() => User, (user) => user.posts)
+  users: User[];
 }
