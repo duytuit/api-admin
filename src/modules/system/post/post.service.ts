@@ -120,7 +120,7 @@ export class PostService {
       .set({
         status: reqChangeStatusDto.status,
       })
-      .where({ id: reqChangeStatusDto.id })
+      .where({ postId: reqChangeStatusDto.id })
       .execute();
   }
 
@@ -137,7 +137,7 @@ export class PostService {
           Helper.toLowerCaseNonAccentVietnamese(ReqChangeSlugDto.slug),
         ),
       })
-      .where({ id: ReqChangeSlugDto.id })
+      .where({ postId: ReqChangeSlugDto.id })
       .execute();
   }
 
@@ -195,7 +195,7 @@ export class PostService {
     await this.postRepository
       .createQueryBuilder('post')
       .softDelete()
-      .where({ id: body.id, projectId: body.projectId })
+      .where({ postId: body.id, projectId: body.projectId })
       .execute();
   }
   async countPostGroupCategory(
