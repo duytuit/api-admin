@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer';
 import { IsNumber, IsOptional, IsString } from 'class-validator';
 import { Column, Double, Entity, PrimaryGeneratedColumn } from 'typeorm';
-@Entity({ database: 'infinite_cms' })
+@Entity({ database: process.env.MYSQL_DATABASE_1 })
 export class Tags {
   @PrimaryGeneratedColumn({
     name: 'id',
