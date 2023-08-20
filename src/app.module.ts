@@ -54,7 +54,6 @@ import { CloneViatorModule } from './modules/system/clone_viator/clone_viator.mo
 import { CurrenciesModule } from './modules/system/currencies/currencies.module';
 import { MailService } from './modules/mail/mail.service';
 import { TagsModule } from './modules/system/tags/tags.module';
-import { TestCmsModule } from './modules/thegioiso/test_cms/test_cms.module';
 import { CategoriesModule } from './modules/thegioiso/categories/categories.module';
 import { ImagesModule } from './modules/thegioiso/images/images.module';
 import { PostImagesModule } from './modules/thegioiso/post_images/post_images.module';
@@ -138,7 +137,6 @@ const aliasProviders = createAliasProviders();
     CloneViatorModule,
     CurrenciesModule,
     TagsModule,
-    TestCmsModule,
     ImagesModule,
     PostImagesModule,
     PostsModule,
