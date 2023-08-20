@@ -2,7 +2,7 @@ import { Type } from 'class-transformer';
 import { IsNumber, IsOptional, IsString } from 'class-validator';
 import { BaseEntity } from 'src/common/entities/base.entity';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-@Entity({ database: 'thegioiso.pro' })
+@Entity({ database: process.env.MYSQL_DATABASE_1 })
 export class Post_Images {
   @PrimaryGeneratedColumn({
     name: 'id',
