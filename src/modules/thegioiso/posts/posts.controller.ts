@@ -146,6 +146,10 @@ export class PostsController {
   }
   private async getQueueXaHoi(cateId) {
     let xahoi_detail = null;
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox'],
+    });
     do {
       xahoi_detail = await this.redis.lpop('list_xahoi');
       if (xahoi_detail) {
@@ -157,14 +161,11 @@ export class PostsController {
           console.log('bài viết đã tồn tại trong cơ sở dữ liệu');
           continue;
         }
+        const page = await browser.newPage();
         try {
           const dataObj: any = {};
-          const browser = await puppeteer.launch({
-            headless: true,
-            args: ['--no-sandbox'],
-          });
           // Navigate to the selected page
-          const page = await browser.newPage();
+
           await page.goto(xahoi_detail.link, {
             waitUntil: 'domcontentloaded',
             timeout: 30000,
@@ -180,9 +181,14 @@ export class PostsController {
               // Make sure the book to be scraped is in stock
               // Extract the links from the data
               return links.map((el) => ({
-                title: el.querySelector<HTMLLinkElement>('a')?.title || '',
+                title:
+                  el.querySelector<HTMLLinkElement>(
+                    '.VCSortableInPreviewMode a',
+                  )?.title || '',
                 image_src:
-                  el.querySelector<HTMLImageElement>('a img')?.src || '',
+                  el.querySelector<HTMLImageElement>(
+                    '.VCSortableInPreviewMode a img',
+                  )?.src || '',
                 content:
                   el.tagName == 'P' ||
                   el
@@ -369,11 +375,12 @@ export class PostsController {
             }
           }
           await page.close();
-          await browser.close();
         } catch (exce: any) {
+          await page.close();
           console.log(exce.stack);
         }
       }
     } while (xahoi_detail);
+    await browser.close();
   }
 }
