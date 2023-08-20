@@ -25,6 +25,17 @@ export default defineConfig({
     synchronize: true, //Nếu mô hình tự động tải cho true sẽ được đồng bộ hóa vào cơ sở dữ liệu và môi trường sản xuất phải được đóng, nếu không dữ liệu bị mất do xóa trường.
     logging: true, //Có bắt đầu bản ghi nhật ký không
   },
+  database1: {
+    type: 'mysql', //Loại cơ sở dữ liệu
+    host: process.env.MYSQL_HOST || 'localhost', //Địa chỉ cơ sở dữ liệu
+    port: process.env.MYSQL_PORT || 3306, //Cổng cơ sở dữ liệu
+    username: process.env.MYSQL_USERNAME || 'root', //Tài khoản cơ sở dữ liệu
+    password: process.env.MYSQL_PASSWORD || 'Duytuit89!', //Mật khẩu cơ sở dữ liệu
+    database: process.env.MYSQL_DATABASE || 'infinite_cms', //Tên cơ sở dữ liệu
+    autoLoadModels: true, //Mô hình được tự động tải mà không cần thực hành lặp lại tại cấu hình.
+    synchronize: true, //Nếu mô hình tự động tải cho true sẽ được đồng bộ hóa vào cơ sở dữ liệu và môi trường sản xuất phải được đóng, nếu không dữ liệu bị mất do xóa trường.
+    logging: true, //Có bắt đầu bản ghi nhật ký không
+  },
   // redis Cấu hình
   redis: {
     config: {

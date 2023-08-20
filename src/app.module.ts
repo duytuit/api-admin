@@ -21,7 +21,6 @@ import { JobService } from './modules/monitor/job/job.service';
 import { DevModule } from './modules/system/dev/dev.module';
 import { UploadModule } from './modules/system/upload/upload.module';
 import { ProjectsModule } from './modules/system/projects/projects.module';
-import { CategoriesModule } from './modules/system/categories/categories.module';
 import { ProductsModule } from './modules/system/products/products.module';
 import { ProductDetailsModule } from './modules/system/product_details/product_details.module';
 import { BlogsModule } from './modules/system/blogs/blogs.module';
@@ -55,6 +54,12 @@ import { CloneViatorModule } from './modules/system/clone_viator/clone_viator.mo
 import { CurrenciesModule } from './modules/system/currencies/currencies.module';
 import { MailService } from './modules/mail/mail.service';
 import { TagsModule } from './modules/system/tags/tags.module';
+import { TestCmsModule } from './modules/thegioiso/test_cms/test_cms.module';
+import { CategoriesModule } from './modules/thegioiso/categories/categories.module';
+import { ImagesModule } from './modules/thegioiso/images/images.module';
+import { PostImagesModule } from './modules/thegioiso/post_images/post_images.module';
+import { PostsModule } from './modules/thegioiso/posts/posts.module';
+import { TagsModule as _TagsModule } from './modules/thegioiso/tags/tags.module';
 
 /* Sẽ provider Tên lớp，Thuận tiện để gọi hẹn giờ gọi*/
 const providers = [JobService];
@@ -133,6 +138,10 @@ const aliasProviders = createAliasProviders();
     CloneViatorModule,
     CurrenciesModule,
     TagsModule,
+    TestCmsModule,
+    ImagesModule,
+    PostImagesModule,
+    PostsModule,
   ],
   providers: [...aliasProviders, MailService],
 })

@@ -46,6 +46,8 @@
     "@types/puppeteer": "^7.0.4",
     "@types/systeminformation": "^3.54.1",
     "@types/ua-parser-js": "^0.7.36",
+    "@waylaidwanderer/fastify-sse-v2": "^3.1.0",
+    "@waylaidwanderer/fetch-event-source": "^3.0.1",
     "axios": "0.24.0",
     "bull": "^4.10.0",
     "class-transformer": "^0.5.1",
@@ -73,6 +75,14 @@
     "systeminformation": "^5.12.6",
     "typeorm": "^0.3.10",
     "ua-parser-js": "^1.0.2",
+    "fastify": "^4.11.0",
+    "fetch-undici": "^3.0.1",
+    "gpt-3-encoder": "^1.1.4",
+    "https-proxy-agent": "^5.0.1",
+    "inquirer": "^9.1.4",
+    "inquirer-autocomplete-prompt": "^3.0.0",
+    "keyv": "^4.5.2",
+    "keyv-file": "^0.2.0",
     "whatwg-mimetype": "^3.0.0"
   },
   "devDependencies": {

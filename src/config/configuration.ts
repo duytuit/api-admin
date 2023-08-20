@@ -61,6 +61,21 @@ export interface IConfig {
   };
 
   /**
+   * Cấu hình cơ sở dữ liệu
+   */
+  database1?: {
+    type?: string;
+    host?: string;
+    port?: number | string;
+    username?: string;
+    password?: string;
+    database?: string;
+    autoLoadModels: boolean; // Nếu bạn làm true，Mô hình sẽ được tự động tải (mặc định:false)
+    synchronize?: boolean; //Nếu bạn lào, mô hình tải tự động sẽ đồng bộ hóa
+    logging?: any;
+  };
+
+  /**
    * redis Cấu hình
    */
   redis?: {

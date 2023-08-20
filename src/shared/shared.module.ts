@@ -45,6 +45,22 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
       }),
       inject: [ConfigService],
     }),
+    TypeOrmModule.forRootAsync({
+      name: 'db2',
+      useFactory: (configService: ConfigService) => ({
+        autoLoadEntities: true,
+        type: configService.get<any>('database1.type'),
+        host: configService.get<string>('database1.host'),
+        port: configService.get<number>('database1.port'),
+        username: configService.get<string>('database1.username'),
+        password: configService.get<string>('database1.password'),
+        database: configService.get<string>('database1.database'),
+        autoLoadModels: configService.get<boolean>('database1.autoLoadModels'),
+        synchronize: configService.get<boolean>('database1.synchronize'),
+        logging: configService.get('database1.logging'),
+      }),
+      inject: [ConfigService],
+    }),
 
     /* liên kết redis */
     RedisModule.forRootAsync({
