@@ -320,7 +320,7 @@ export class PostsController {
             post['content_detail'] = content_detail;
           }
           const posts = new Posts();
-          posts.langId = 1;
+          posts.langId = 2;
           posts.title = xahoi_detail.title;
           posts.titleSlug = Helper.convertToSlug(
             Helper.toLowerCaseNonAccentVietnamese(xahoi_detail.title),
