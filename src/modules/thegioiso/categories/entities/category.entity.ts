@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-@Entity({ database: process.env.MYSQL_DATABASE_1 })
+@Entity({ database: 'thegioiso.pro' })
 export class Categories {
   @PrimaryGeneratedColumn({
     name: 'id',
