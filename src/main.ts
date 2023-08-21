@@ -4,6 +4,7 @@ import { join } from 'path';
 import { AppModule } from './app.module';
 import { setupSwagger } from './setup-swagger';
 import * as history from 'connect-history-api-fallback';
+import * as bodyParser from 'body-parser';
 import helmet from 'helmet';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -41,7 +42,9 @@ async function bootstrap() {
       prefix: '/upload',
     });
   }
-
+  // the next two lines did the trick
+  app.use(bodyParser.json({ limit: '50mb' }));
+  app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
   /* Bắt đầu swagger */
   //setupSwagger(app);
   app.setGlobalPrefix('api');
