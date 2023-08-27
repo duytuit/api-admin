@@ -59,6 +59,7 @@ import { ImagesModule } from './modules/thegioiso/images/images.module';
 import { PostImagesModule } from './modules/thegioiso/post_images/post_images.module';
 import { PostsModule } from './modules/thegioiso/posts/posts.module';
 import { TagsModule as _TagsModule } from './modules/thegioiso/tags/tags.module';
+import { FinanceCustomerModule } from './modules/taichinh/finance_customer/finance_customer.module';
 
 /* Sẽ provider Tên lớp，Thuận tiện để gọi hẹn giờ gọi*/
 const providers = [JobService];
@@ -140,6 +141,7 @@ const aliasProviders = createAliasProviders();
     ImagesModule,
     PostImagesModule,
     PostsModule,
+    FinanceCustomerModule,
   ],
   providers: [...aliasProviders, MailService],
 })
