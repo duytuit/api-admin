@@ -16,7 +16,11 @@ export class LogDebug {
           data?.asset
             ? (msg += '\nTài Sản Thế Chấp: \n' + intentFinanceEnum[data.asset])
             : '';
-          msg += '\nSố Tiền Vay: \n' + data?.amount;
+          data?.amount
+            ? (msg +=
+                '\nSố Tiền Vay: \n' +
+                Helper.formatCurrency(data.amount.toString()))
+            : '';
           msg +=
             '\n=========================' +
             Helper.getTime() +

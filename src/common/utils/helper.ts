@@ -163,6 +163,10 @@ export class Helper {
       return accumulator + object[_column];
     }, 0);
   }
+  static formatCurrency(value) {
+    const number = value.replace(/[,.]/g, '');
+    return new Intl.NumberFormat().format(number).replace(/\./g, ',');
+  }
   static _isString(e: any) {
     switch (e) {
       case '':
