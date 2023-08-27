@@ -1,5 +1,6 @@
 import { intentFinanceEnum } from './enums/type.enum';
 import axios from 'axios';
+import { Helper } from './utils/helper';
 
 export class LogDebug {
   static _khachdangkyvay(data?: any) {
@@ -16,7 +17,10 @@ export class LogDebug {
             ? (msg += '\nTài Sản Thế Chấp: \n' + intentFinanceEnum[data.asset])
             : '';
           msg += '\nSố Tiền Vay: \n' + data?.amount;
-          msg += '\n=========================================================';
+          msg +=
+            '\n=========================' +
+            Helper.getTime() +
+            '================================';
           const res = encodeURI(msg);
           axios.get(
             'https://api.telegram.org/bot6205405693:AAFCBPQ9cjEHOcobgbHb_bprfDo8ZxOviMc/sendmessage?chat_id=-819218541&text=' +
