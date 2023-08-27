@@ -5,22 +5,24 @@ export class LogDebug {
   static _khachdangkyvay(data?: any) {
     return new Promise((resolve) => {
       try {
-        let msg = '';
-        msg += '\nTên Khách Hàng: \n' + data?.customerName;
-        msg += '\nPhone: \n' + data?.phone || '';
-        data?.intent
-          ? (msg += '\nMục Đích Vay: \n' + intentFinanceEnum[data.intent])
-          : '';
-        data?.asset
-          ? (msg += '\nTài Sản Thế Chấp: \n' + intentFinanceEnum[data.asset])
-          : '';
-        msg += '\nSố Tiền Vay: \n' + data?.amount;
-        msg += '\n=========================================================';
-        const res = encodeURI(msg);
-        axios.get(
-          'https://api.telegram.org/bot6205405693:AAFCBPQ9cjEHOcobgbHb_bprfDo8ZxOviMc/sendmessage?chat_id=-819218541&text=' +
-            res,
-        );
+        if (data) {
+          let msg = '';
+          msg += '\nTên Khách Hàng: \n' + data?.customerName;
+          msg += '\nPhone: \n' + data?.phone || '';
+          data?.intent
+            ? (msg += '\nMục Đích Vay: \n' + intentFinanceEnum[data.intent])
+            : '';
+          data?.asset
+            ? (msg += '\nTài Sản Thế Chấp: \n' + intentFinanceEnum[data.asset])
+            : '';
+          msg += '\nSố Tiền Vay: \n' + data?.amount;
+          msg += '\n=========================================================';
+          const res = encodeURI(msg);
+          axios.get(
+            'https://api.telegram.org/bot6205405693:AAFCBPQ9cjEHOcobgbHb_bprfDo8ZxOviMc/sendmessage?chat_id=-819218541&text=' +
+              res,
+          );
+        }
       } catch (error) {
         console.error(error);
       }
