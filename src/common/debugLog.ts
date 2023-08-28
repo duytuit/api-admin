@@ -7,7 +7,6 @@ export class LogDebug {
     return new Promise((resolve) => {
       try {
         if (data) {
-          console.log(data);
           let msg = data?.source;
           msg += '\nTên Khách Hàng: \n' + data?.customerName;
           msg += '\nPhone: \n' + data?.phone || '';
