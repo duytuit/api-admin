@@ -1,4 +1,4 @@
-import { intentFinanceEnum } from './enums/type.enum';
+import { assetFinanceEnum, intentFinanceEnum } from './enums/type.enum';
 import axios from 'axios';
 import { Helper } from './utils/helper';
 
@@ -7,14 +7,15 @@ export class LogDebug {
     return new Promise((resolve) => {
       try {
         if (data) {
-          let msg = '';
+          console.log(data);
+          let msg = data?.source;
           msg += '\nTên Khách Hàng: \n' + data?.customerName;
           msg += '\nPhone: \n' + data?.phone || '';
           data?.intent
             ? (msg += '\nMục Đích Vay: \n' + intentFinanceEnum[data.intent])
             : '';
           data?.asset
-            ? (msg += '\nTài Sản Thế Chấp: \n' + intentFinanceEnum[data.asset])
+            ? (msg += '\nTài Sản Thế Chấp: \n' + assetFinanceEnum[data.asset])
             : '';
           data?.amount
             ? (msg +=

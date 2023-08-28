@@ -31,10 +31,14 @@ export class FinanceCustomerController {
   ) {}
 
   @Post('create')
-  async create(@Body() CreateServiceDto: CreateFinanceCustomerDto) {
+  async create(
+    @Body() CreateServiceDto: CreateFinanceCustomerDto,
+    @Body() body: any,
+  ) {
     CreateServiceDto.billCode = ('VN' + Helper.getTime()).toString();
     CreateServiceDto.cycleName = parseInt(Helper.getCycleName());
-    LogDebug._khachdangkyvay(CreateServiceDto);
+    // console.log(body);
+    LogDebug._khachdangkyvay(body);
     return this.FinanceCustomerService.addOrUpdate(CreateServiceDto);
   }
   @Post('update')
