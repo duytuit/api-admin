@@ -47,7 +47,7 @@ export class NoticeController {
     @User(UserEnum.userName, UserInfoPipe) userName: string,
   ) {
     reqAddNoticeDto.createBy = reqAddNoticeDto.updateBy = userName;
-    LogDebug._info(JSON.stringify(reqAddNoticeDto));
+    //LogDebug._info(JSON.stringify(reqAddNoticeDto));
     await this.noticeService.addOrUpdate(reqAddNoticeDto);
   }
 
@@ -81,7 +81,7 @@ export class NoticeController {
     @User(UserEnum.userName, UserInfoPipe) userName: string,
   ) {
     notice.updateBy = userName;
-    LogDebug._info(userName);
+    //LogDebug._info(userName);
     await this.noticeService.addOrUpdate(notice);
   }
 
@@ -93,7 +93,6 @@ export class NoticeController {
     businessType: BusinessTypeEnum.delete,
   })
   async delete(@Param('noticeIds') noticeIds: string) {
-    LogDebug._info(noticeIds);
     await this.noticeService.delete(noticeIds.split(','));
   }
 }

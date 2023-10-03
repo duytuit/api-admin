@@ -56,7 +56,6 @@ export class JobController {
     @User(UserEnum.userName, UserInfoPipe) userName: string,
   ) {
     reqAddJob.createBy = reqAddJob.updateBy = userName;
-    LogDebug._info(userName);
     await this.jobService.addJob(reqAddJob);
   }
 
